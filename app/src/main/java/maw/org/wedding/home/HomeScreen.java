@@ -1,4 +1,4 @@
-package maw.org.wedding.android.home;
+package maw.org.wedding.home;
 
 import android.app.Activity;
 

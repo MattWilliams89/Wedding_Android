@@ -1,4 +1,4 @@
-package maw.org.wedding.android;
+package maw.org.wedding;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -25,8 +25,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import maw.org.wedding.R;
-import maw.org.wedding.android.home.HomeScreen;
-import maw.org.wedding.android.info_section.InfoScreen;
+import maw.org.wedding.home.HomeScreen;
+import maw.org.wedding.info_section.InfoScreen;
+import maw.org.wedding.map.MapScreen;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Navigator {
 
@@ -72,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         List<ScreenEvent> events = new ArrayList<>();
         events.add(new ScreenEvent(new HomeScreen(this), R.id.home_event));
         events.add(new ScreenEvent(new InfoScreen(this), R.id.info_event));
+        events.add(new ScreenEvent(new MapScreen(this), R.id.map_event));
+
         mNavigationController.registerForScreenEvents(events);
 
         if (savedInstanceState == null) {

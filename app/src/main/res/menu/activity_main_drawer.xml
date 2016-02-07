@@ -12,6 +12,11 @@
             android:icon="@drawable/info_icon"
             android:title="Info" />
 
+        <item
+            android:id="@+id/map_event"
+            android:icon="@drawable/map_icon"
+            android:title="Map" />
+
     </group>
 
     <item android:title="Communicate">
