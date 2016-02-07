@@ -24,7 +24,7 @@ import java.util.List;
 import maw.org.wedding.R;
 
 
-public class MapLocationFragment extends MapFragment implements OnMapReadyCallback, GoogleMap.OnMapLoadedCallback {
+public class MapLocationFragment extends MapFragment implements OnMapReadyCallback {
 
     private static final int REQUEST_CODE = 99;
 
@@ -49,7 +49,7 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mMediaCity, 15));
 
         mMap.setTrafficEnabled(true);
-        mMap.setOnMapLoadedCallback(this);
+        getCurrentLocation();
     }
 
     private void getCurrentLocation() {
@@ -100,8 +100,4 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
         }
     }
 
-    @Override
-    public void onMapLoaded() {
-        getCurrentLocation();
-    }
 }
