@@ -2,16 +2,17 @@ package maw.org.wedding;
 
 import org.junit.Test;
 import org.maw.wedding.navigation.Bus;
-import org.maw.wedding.navigation.NavigationEventController;
 import org.maw.wedding.navigation.NavigationEvent;
+import org.maw.wedding.navigation.NavigationEventController;
 import org.maw.wedding.navigation.Navigator;
 import org.maw.wedding.navigation.Screen;
 import org.maw.wedding.navigation.ScreenEvent;
-import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.mockito.Mockito.mock;
 
 public class NavigationControllerTest {
 
@@ -21,22 +22,19 @@ public class NavigationControllerTest {
         Navigator mockNavigator = Mockito.mock(Navigator.class);
         NavigationEventController navigationController = new NavigationEventController(mockNavigator, Mockito.mock(Bus.class));
 
-        ScreenEvent mockEvent = Mockito.mock(ScreenEvent.class);
-        Mockito.when(mockEvent.getId()).thenReturn(1);
-
-        Screen mockScreen = Mockito.mock(Screen.class);
-        Mockito.when(mockEvent.getScreen()).thenReturn(mockScreen);
+        ScreenEvent screenEvent = new ScreenEvent(mock(Screen.class), 1);
 
         List<ScreenEvent> screenEvents = new ArrayList<>();
-        screenEvents.add(mockEvent);
+        screenEvents.add(screenEvent);
 
         navigationController.registerForScreenEvents(screenEvents);
+        navigationController.onReady();
 
-        NavigationEvent navEvent = new NavigationEvent(1);
+        NavigationEvent navigationEvent = new NavigationEvent(1);
 
-        navigationController.onEvent(navEvent);
+        navigationController.onEvent(navigationEvent);
 
-        Mockito.verify(mockNavigator).navigate(Matchers.eq(1), Matchers.eq(mockScreen));
+        Mockito.verify(mockNavigator).navigate(screenEvent);
     }
 
 

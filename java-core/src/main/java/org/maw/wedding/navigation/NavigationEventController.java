@@ -37,6 +37,6 @@ public class NavigationEventController implements EventListener {
     }
 
     private void navigate(ScreenEvent screenEvent) {
-        mNavigator.navigate(screenEvent.getId(), screenEvent.getScreen());
+        mNavigator.navigate(screenEvent);
     }
 }

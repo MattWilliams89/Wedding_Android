@@ -13,10 +13,9 @@ import android.view.MenuItem;
 
 import org.maw.wedding.navigation.Bus;
 import org.maw.wedding.navigation.EventBus;
-import org.maw.wedding.navigation.NavigationEventController;
 import org.maw.wedding.navigation.NavigationEvent;
+import org.maw.wedding.navigation.NavigationEventController;
 import org.maw.wedding.navigation.Navigator;
-import org.maw.wedding.navigation.Screen;
 import org.maw.wedding.navigation.ScreenEvent;
 
 import java.util.ArrayList;
@@ -110,8 +109,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void navigate(int eventId, Screen screen) {
-        mNavigationView.setCheckedItem(eventId);
-        screen.show();
+    public void navigate(ScreenEvent screenEvent) {
+        mNavigationView.setCheckedItem(screenEvent.getId());
+        screenEvent.getScreen().show();
     }
 }

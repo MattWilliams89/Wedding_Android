@@ -9,28 +9,25 @@ import org.maw.wedding.navigation.NavigationEventController;
 import org.maw.wedding.navigation.Navigator;
 import org.maw.wedding.navigation.Screen;
 import org.maw.wedding.navigation.ScreenEvent;
-import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.mockito.Mockito.mock;
 
 public class EventBusTest {
 
     @Test
     public void testEventBusEventsAreReceived() {
         Bus eventBus = new EventBus();
-        Navigator mockNavigator = Mockito.mock(Navigator.class);
+        Navigator mockNavigator = mock(Navigator.class);
         NavigationEventController navigationController = new NavigationEventController(mockNavigator, eventBus);
 
-        ScreenEvent mockEvent = Mockito.mock(ScreenEvent.class);
-        Mockito.when(mockEvent.getId()).thenReturn(1);
-
-        Screen mockScreen = Mockito.mock(Screen.class);
-        Mockito.when(mockEvent.getScreen()).thenReturn(mockScreen);
+        ScreenEvent screenEvent = new ScreenEvent(mock(Screen.class), 1);
 
         List<ScreenEvent> screenEvents = new ArrayList<>();
-        screenEvents.add(mockEvent);
+        screenEvents.add(screenEvent);
 
         navigationController.registerForScreenEvents(screenEvents);
         navigationController.onReady();
@@ -39,24 +36,20 @@ public class EventBusTest {
 
         eventBus.post(navigationEvent);
 
-        Mockito.verify(mockNavigator).navigate(Matchers.eq(1), Matchers.eq(mockScreen));
+        Mockito.verify(mockNavigator).navigate(screenEvent);
     }
 
     @Test
     public void testListenerOnlyReceivesEventOfCorrectType() {
 
         Bus eventBus = new EventBus();
-        Navigator mockNavigator = Mockito.mock(Navigator.class);
+        Navigator mockNavigator = mock(Navigator.class);
         NavigationEventController navigationController = new NavigationEventController(mockNavigator, eventBus);
 
-        ScreenEvent mockEvent = Mockito.mock(ScreenEvent.class);
-        Mockito.when(mockEvent.getId()).thenReturn(1);
-
-        Screen mockScreen = Mockito.mock(Screen.class);
-        Mockito.when(mockEvent.getScreen()).thenReturn(mockScreen);
+        ScreenEvent screenEvent = new ScreenEvent(mock(Screen.class), 1);
 
         List<ScreenEvent> screenEvents = new ArrayList<>();
-        screenEvents.add(mockEvent);
+        screenEvents.add(screenEvent);
 
         navigationController.registerForScreenEvents(screenEvents);
         navigationController.onReady();
