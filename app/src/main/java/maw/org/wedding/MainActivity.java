@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private NavigationController mNavigationController;
     private Bus mEventBus;
+    private NavigationView mNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +48,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
 
         mEventBus = new Bus();
         mNavigationController = new NavigationController(this, mEventBus);
@@ -91,7 +92,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void navigate(Fragment fragment) {
+    public void navigate(int eventId, Fragment fragment) {
+        mNavigationView.setCheckedItem(eventId);
         getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 }

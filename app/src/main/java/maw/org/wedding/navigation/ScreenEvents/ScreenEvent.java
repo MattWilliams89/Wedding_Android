@@ -4,4 +4,5 @@ import android.app.Fragment;
 
 public interface ScreenEvent {
     Fragment getScreen();
+    int getId();
 }

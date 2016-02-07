@@ -22,8 +22,8 @@ public class NavigationController {
         mEventBus = eventBus;
 
         mNavigationMap = new HashMap<>();
-        mNavigationMap.put(R.id.home, new HomeScreenEvent());
-        mNavigationMap.put(R.id.nav_camera, new InfoScreenEvent());
+        mNavigationMap.put(R.id.home_event, new HomeScreenEvent());
+        mNavigationMap.put(R.id.info_event, new InfoScreenEvent());
 
     }
 
@@ -36,13 +36,17 @@ public class NavigationController {
     }
 
     public void onScreenEvent(ScreenEvent screenEvent) {
-        mAndroidNavigator.navigate(screenEvent.getScreen());
+        navigate(screenEvent);
     }
 
     @Subscribe
     public void onNavigationEvent(NavigationEvent navigationEvent) {
         if (mNavigationMap.containsKey(navigationEvent.getEventId())) {
-            mAndroidNavigator.navigate(mNavigationMap.get(navigationEvent.getEventId()).getScreen());
+            navigate(mNavigationMap.get(navigationEvent.getEventId()));
         }
+    }
+
+    private void navigate(ScreenEvent screenEvent) {
+        mAndroidNavigator.navigate(screenEvent.getId(), screenEvent.getScreen());
     }
 }

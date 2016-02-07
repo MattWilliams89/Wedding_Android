@@ -1,4 +1,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <item name="home_icon" type="drawable">@android:drawable/ic_secure</item>
+
+    <item name="info_icon" type="drawable">@android:drawable/ic_dialog_info</item>
     <item name="ic_menu_camera" type="drawable">@android:drawable/ic_menu_camera</item>
     <item name="ic_menu_gallery" type="drawable">@android:drawable/ic_menu_gallery</item>
     <item name="ic_menu_slideshow" type="drawable">@android:drawable/ic_menu_slideshow</item>
