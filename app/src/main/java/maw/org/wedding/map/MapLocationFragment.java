@@ -32,8 +32,8 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        LatLng home = new LatLng(53.447460, -2.306362);
-        mMap.addMarker(new MarkerOptions().position(home).title("34A Cyprus Street"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(home));
+        LatLng home = new LatLng(53.472704, -2.298379);
+        mMap.addMarker(new MarkerOptions().position(home).title("MediaCityUk"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(home, 15));
     }
 }
