@@ -1,4 +1,4 @@
-package maw.org.wedding.home;
+package maw.org.wedding.android.home;
 
 import android.app.Fragment;
 import android.os.Bundle;

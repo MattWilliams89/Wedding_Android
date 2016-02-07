@@ -1,15 +1,14 @@
 package maw.org.wedding.navigation.ScreenEvents;
 
 
-import android.app.Fragment;
-
 import maw.org.wedding.R;
-import maw.org.wedding.info_section.InfoFragment;
+import maw.org.wedding.android.info_section.InfoScreen;
+import maw.org.wedding.android.Screen;
 
 public class InfoScreenEvent implements ScreenEvent {
     @Override
-    public Fragment getScreen() {
-        return InfoFragment.newInstance();
+    public Screen getScreen() {
+        return new InfoScreen();
     }
 
     @Override

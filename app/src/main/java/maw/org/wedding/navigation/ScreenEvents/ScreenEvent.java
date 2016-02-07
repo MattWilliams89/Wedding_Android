@@ -1,8 +1,9 @@
 package maw.org.wedding.navigation.ScreenEvents;
 
-import android.app.Fragment;
+
+import maw.org.wedding.android.Screen;
 
 public interface ScreenEvent {
-    Fragment getScreen();
+    Screen getScreen();
     int getId();
 }

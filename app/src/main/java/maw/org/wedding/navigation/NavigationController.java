@@ -4,27 +4,26 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import maw.org.wedding.R;
-import maw.org.wedding.navigation.ScreenEvents.HomeScreenEvent;
-import maw.org.wedding.navigation.ScreenEvents.InfoScreenEvent;
 import maw.org.wedding.navigation.ScreenEvents.ScreenEvent;
 
 public class NavigationController {
 
-    private AndroidNavigator mAndroidNavigator;
+    private Navigator mNavigator;
     private Bus mEventBus;
-    private Map<Integer, ScreenEvent> mNavigationMap;
+    private Map<Integer, ScreenEvent> mNavigationMap = new HashMap<>();
 
-    public NavigationController(AndroidNavigator androidNavigator, Bus eventBus) {
-        mAndroidNavigator = androidNavigator;
+    public NavigationController(Navigator navigator, Bus eventBus) {
+        mNavigator = navigator;
         mEventBus = eventBus;
+    }
 
-        mNavigationMap = new HashMap<>();
-        mNavigationMap.put(R.id.home_event, new HomeScreenEvent());
-        mNavigationMap.put(R.id.info_event, new InfoScreenEvent());
-
+    public void registerEvents(List<ScreenEvent> eventList) {
+        for (ScreenEvent screenEvent : eventList) {
+            mNavigationMap.put(screenEvent.getId(), screenEvent);
+        }
     }
 
     public void onReady() {
@@ -47,6 +46,6 @@ public class NavigationController {
     }
 
     private void navigate(ScreenEvent screenEvent) {
-        mAndroidNavigator.navigate(screenEvent.getId(), screenEvent.getScreen());
+        mNavigator.navigate(screenEvent.getId(), screenEvent.getScreen());
     }
 }

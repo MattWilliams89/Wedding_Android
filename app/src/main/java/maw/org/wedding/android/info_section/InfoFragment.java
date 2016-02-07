@@ -1,4 +1,4 @@
-package maw.org.wedding.info_section;
+package maw.org.wedding.android.info_section;
 
 
 import android.app.Fragment;

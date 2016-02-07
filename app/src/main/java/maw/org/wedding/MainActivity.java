@@ -1,6 +1,5 @@
 package maw.org.wedding;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -14,15 +13,21 @@ import android.view.MenuItem;
 
 import com.squareup.otto.Bus;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import maw.org.wedding.navigation.AndroidNavigator;
+import maw.org.wedding.navigation.Navigator;
 import maw.org.wedding.navigation.NavigationController;
 import maw.org.wedding.navigation.NavigationEvent;
+import maw.org.wedding.android.Screen;
 import maw.org.wedding.navigation.ScreenEvents.HomeScreenEvent;
+import maw.org.wedding.navigation.ScreenEvents.InfoScreenEvent;
+import maw.org.wedding.navigation.ScreenEvents.ScreenEvent;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AndroidNavigator {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Navigator {
 
     private NavigationController mNavigationController;
     private Bus mEventBus;
@@ -64,6 +69,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mEventBus = new Bus();
         mNavigationController = new NavigationController(this, mEventBus);
 
+        List<ScreenEvent> events = new ArrayList<>();
+        events.add(new HomeScreenEvent());
+        events.add(new InfoScreenEvent());
+        mNavigationController.registerEvents(events);
+
         if (savedInstanceState == null) {
             mNavigationController.onScreenEvent(new HomeScreenEvent());
         }
@@ -99,8 +109,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void navigate(int eventId, Fragment fragment) {
+    public void navigate(int eventId, Screen screen) {
         mNavigationView.setCheckedItem(eventId);
-        getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+        getFragmentManager().beginTransaction().replace(R.id.container, screen.getFragment()).commit();
     }
 }
