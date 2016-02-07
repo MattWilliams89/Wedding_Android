@@ -6,13 +6,9 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,7 +24,7 @@ import java.util.List;
 import maw.org.wedding.R;
 
 
-public class MapLocationFragment extends MapFragment implements OnMapReadyCallback {
+public class MapLocationFragment extends MapFragment implements OnMapReadyCallback, GoogleMap.OnMapLoadedCallback {
 
     private static final int REQUEST_CODE = 99;
 
@@ -40,9 +36,9 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public void onStart() {
+        super.onStart();
         getMapAsync(this);
-        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
@@ -53,8 +49,7 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mMediaCity, 15));
 
         mMap.setTrafficEnabled(true);
-
-        getCurrentLocation();
+        mMap.setOnMapLoadedCallback(this);
     }
 
     private void getCurrentLocation() {
@@ -75,7 +70,7 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
                 mMap.addMarker(new MarkerOptions().position(positionLatLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.current_location)));
 
                 LatLngBounds bounds = toBounds(mMediaCity, positionLatLng);
-                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 10));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 500));
             }
         }
         else {
@@ -103,5 +98,10 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
                 getCurrentLocation();
             }
         }
+    }
+
+    @Override
+    public void onMapLoaded() {
+        getCurrentLocation();
     }
 }
