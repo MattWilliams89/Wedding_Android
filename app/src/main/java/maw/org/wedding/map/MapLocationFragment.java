@@ -35,5 +35,7 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
         LatLng home = new LatLng(53.472704, -2.298379);
         mMap.addMarker(new MarkerOptions().position(home).title("MediaCityUk"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(home, 15));
+
+        mMap.setTrafficEnabled(true);
     }
 }
