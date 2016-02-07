@@ -1,9 +1,14 @@
 package org.maw.wedding.navigation;
 
 public interface Bus {
-    void subscibe(NavigationListener listener);
+    enum EVENT_TYPE {
+        NAVIGATION,
+        OTHER
+    }
 
-    void unSubscribe(NavigationListener listener);
+    void subscibe(EVENT_TYPE eventType, EventListener listener);
 
-    void post(NavigationEvent navigationEvent);
+    void unSubscribe(EVENT_TYPE eventType, EventListener listener);
+
+    void post(Event event);
 }

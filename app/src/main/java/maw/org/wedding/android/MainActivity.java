@@ -13,7 +13,7 @@ import android.view.MenuItem;
 
 import org.maw.wedding.navigation.Bus;
 import org.maw.wedding.navigation.EventBus;
-import org.maw.wedding.navigation.NavigationController;
+import org.maw.wedding.navigation.NavigationEventController;
 import org.maw.wedding.navigation.NavigationEvent;
 import org.maw.wedding.navigation.Navigator;
 import org.maw.wedding.navigation.Screen;
@@ -31,7 +31,7 @@ import maw.org.wedding.android.info_section.InfoScreen;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Navigator {
 
-    private NavigationController mNavigationController;
+    private NavigationEventController mNavigationController;
     private Bus mEventBus;
 
     @Bind(R.id.nav_view)
@@ -68,15 +68,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mNavigationView.setNavigationItemSelectedListener(this);
 
         mEventBus = new EventBus();
-        mNavigationController = new NavigationController(this, mEventBus);
+        mNavigationController = new NavigationEventController(this, mEventBus);
 
         List<ScreenEvent> events = new ArrayList<>();
         events.add(new ScreenEvent(new HomeScreen(this), R.id.home_event));
         events.add(new ScreenEvent(new InfoScreen(this), R.id.info_event));
-        mNavigationController.registerEvents(events);
+        mNavigationController.registerForScreenEvents(events);
 
         if (savedInstanceState == null) {
-            mNavigationController.onNavigationEvent(new NavigationEvent(R.id.home_event));
+            mNavigationController.onEvent(new NavigationEvent(R.id.home_event));
         }
     }
 

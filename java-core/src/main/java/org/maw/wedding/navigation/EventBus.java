@@ -1,26 +1,33 @@
 package org.maw.wedding.navigation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EventBus implements Bus {
 
-    private List<NavigationListener> mListenerList = new ArrayList<>();
+    private Map<EVENT_TYPE, List<EventListener>> mListenerMap = new HashMap<>();
 
-    @Override
-    public void subscibe(NavigationListener listener) {
-        mListenerList.add(listener);
+    public EventBus() {
+        mListenerMap.put(EVENT_TYPE.NAVIGATION, new ArrayList<EventListener>());
+        mListenerMap.put(EVENT_TYPE.OTHER, new ArrayList<EventListener>());
     }
 
     @Override
-    public void unSubscribe(NavigationListener listener) {
-        mListenerList.remove(listener);
+    public void subscibe(EVENT_TYPE eventType, EventListener listener) {
+        mListenerMap.get(eventType).add(listener);
     }
 
     @Override
-    public void post(NavigationEvent navigationEvent) {
-        for (NavigationListener listener : mListenerList) {
-            listener.onNavigationEvent(navigationEvent);
+    public void unSubscribe(EVENT_TYPE eventType, EventListener listener) {
+        mListenerMap.get(eventType).remove(listener);
+    }
+
+    @Override
+    public void post(Event event) {
+        for (EventListener listener : mListenerMap.get(event.getEventType())) {
+            listener.onEvent(event);
         }
     }
 }
