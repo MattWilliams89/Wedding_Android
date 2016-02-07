@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,6 +19,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.maw.wedding.fetching.FetcherListener;
+import org.maw.wedding.fetching.PlacesRestAdapter;
+import org.maw.wedding.places.PlaceList;
 
 import java.util.List;
 
@@ -50,6 +55,21 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
 
         mMap.setTrafficEnabled(true);
         getCurrentLocation();
+
+        PlacesRestAdapter placesRestAdapter = new PlacesRestAdapter();
+        placesRestAdapter.fetchNearbyHotels(new org.maw.wedding.places.Location(mMediaCity.latitude, mMediaCity.longitude),
+                getContext().getResources().getString(R.string.google_server_key),
+                new FetcherListener<PlaceList>() {
+                    @Override
+                    public void onSuccess(PlaceList result) {
+                        Log.e("SUCCESS", ""+ result.results.size());
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        Log.e("FAILURE", "fail");
+                    }
+                });
     }
 
     private void getCurrentLocation() {
@@ -99,5 +119,4 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
             }
         }
     }
-
 }

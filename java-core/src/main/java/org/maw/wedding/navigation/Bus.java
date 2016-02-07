@@ -1,5 +1,8 @@
 package org.maw.wedding.navigation;
 
+import org.maw.wedding.navigation.Event;
+import org.maw.wedding.navigation.EventListener;
+
 public interface Bus {
     enum EVENT_TYPE {
         NAVIGATION,
