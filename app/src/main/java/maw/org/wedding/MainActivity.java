@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import org.maw.wedding.navigation.Bus;
 import org.maw.wedding.navigation.EventBus;
@@ -24,7 +25,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import maw.org.wedding.R;
 import maw.org.wedding.home.HomeScreen;
 import maw.org.wedding.info_section.InfoScreen;
 import maw.org.wedding.map.MapScreen;
@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Bind(R.id.fab)
     FloatingActionButton mActionButton;
+
+    private NavigationEvent mPendingNavEvent;
 
     @OnClick(R.id.fab)
     void fabClicked() {
@@ -61,7 +63,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(mToolbar);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                if (mPendingNavEvent != null) {
+                    mEventBus.post(mPendingNavEvent);
+                    mPendingNavEvent = null;
+                }
+            }
+        };
         mDrawerLayout.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -105,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        mEventBus.post(new NavigationEvent(item.getItemId()));
+        mPendingNavEvent = new NavigationEvent(item.getItemId());
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
