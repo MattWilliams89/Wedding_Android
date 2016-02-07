@@ -1,17 +1,15 @@
 package maw.org.wedding;
 
-import com.squareup.otto.Bus;
-
 import org.junit.Test;
+import org.maw.wedding.navigation.Bus;
+import org.maw.wedding.navigation.NavigationController;
+import org.maw.wedding.navigation.NavigationEvent;
+import org.maw.wedding.navigation.Navigator;
+import org.maw.wedding.navigation.Screen;
+import org.maw.wedding.navigation.ScreenEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import maw.org.wedding.navigation.Navigator;
-import maw.org.wedding.navigation.NavigationController;
-import maw.org.wedding.navigation.NavigationEvent;
-import maw.org.wedding.android.Screen;
-import maw.org.wedding.navigation.ScreenEvents.ScreenEvent;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;

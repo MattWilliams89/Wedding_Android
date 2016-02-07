@@ -1,6 +1,5 @@
-package maw.org.wedding.navigation;
+package org.maw.wedding.navigation;
 
-import maw.org.wedding.android.Screen;
 
 public interface Navigator {
     void navigate(int eventId, Screen screen);

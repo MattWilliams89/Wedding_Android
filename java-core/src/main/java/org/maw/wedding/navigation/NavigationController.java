@@ -1,15 +1,10 @@
-package maw.org.wedding.navigation;
-
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
+package org.maw.wedding.navigation;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import maw.org.wedding.navigation.ScreenEvents.ScreenEvent;
-
-public class NavigationController {
+public class NavigationController implements NavigationListener{
 
     private Navigator mNavigator;
     private Bus mEventBus;
@@ -27,18 +22,14 @@ public class NavigationController {
     }
 
     public void onReady() {
-        mEventBus.register(this);
+        mEventBus.subscibe(this);
     }
 
     public void cleanUp() {
-        mEventBus.unregister(this);
+        mEventBus.unSubscribe(this);
     }
 
-    public void onScreenEvent(ScreenEvent screenEvent) {
-        navigate(screenEvent);
-    }
-
-    @Subscribe
+    @Override
     public void onNavigationEvent(NavigationEvent navigationEvent) {
         if (mNavigationMap.containsKey(navigationEvent.getEventId())) {
             navigate(mNavigationMap.get(navigationEvent.getEventId()));

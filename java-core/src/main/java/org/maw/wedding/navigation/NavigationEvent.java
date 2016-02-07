@@ -1,4 +1,4 @@
-package maw.org.wedding.navigation;
+package org.maw.wedding.navigation;
 
 public class NavigationEvent {
     private final int mId;

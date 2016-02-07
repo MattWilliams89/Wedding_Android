@@ -1,4 +1,4 @@
-package maw.org.wedding;
+package maw.org.wedding.android;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,7 +11,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.squareup.otto.Bus;
+import org.maw.wedding.navigation.Bus;
+import org.maw.wedding.navigation.EventBus;
+import org.maw.wedding.navigation.NavigationController;
+import org.maw.wedding.navigation.NavigationEvent;
+import org.maw.wedding.navigation.Navigator;
+import org.maw.wedding.navigation.Screen;
+import org.maw.wedding.navigation.ScreenEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,13 +25,9 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import maw.org.wedding.navigation.Navigator;
-import maw.org.wedding.navigation.NavigationController;
-import maw.org.wedding.navigation.NavigationEvent;
-import maw.org.wedding.android.Screen;
-import maw.org.wedding.navigation.ScreenEvents.HomeScreenEvent;
-import maw.org.wedding.navigation.ScreenEvents.InfoScreenEvent;
-import maw.org.wedding.navigation.ScreenEvents.ScreenEvent;
+import maw.org.wedding.R;
+import maw.org.wedding.android.home.HomeScreen;
+import maw.org.wedding.android.info_section.InfoScreen;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Navigator {
 
@@ -43,8 +45,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @OnClick(R.id.fab)
     void fabClicked() {
-        Snackbar.make(mActionButton, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+        Snackbar.make(mActionButton, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
     }
 
     @Bind(R.id.drawer_layout)
@@ -66,16 +67,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mNavigationView.setNavigationItemSelectedListener(this);
 
-        mEventBus = new Bus();
+        mEventBus = new EventBus();
         mNavigationController = new NavigationController(this, mEventBus);
 
         List<ScreenEvent> events = new ArrayList<>();
-        events.add(new HomeScreenEvent());
-        events.add(new InfoScreenEvent());
+        events.add(new ScreenEvent(new HomeScreen(this), R.id.home_event));
+        events.add(new ScreenEvent(new InfoScreen(this), R.id.info_event));
         mNavigationController.registerEvents(events);
 
         if (savedInstanceState == null) {
-            mNavigationController.onScreenEvent(new HomeScreenEvent());
+            mNavigationController.onNavigationEvent(new NavigationEvent(R.id.home_event));
         }
     }
 
@@ -111,6 +112,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void navigate(int eventId, Screen screen) {
         mNavigationView.setCheckedItem(eventId);
-        getFragmentManager().beginTransaction().replace(R.id.container, screen.getFragment()).commit();
+        screen.show();
     }
 }
