@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.maw.wedding.fetching.FetcherListener;
 import org.maw.wedding.fetching.PlacesRestAdapter;
+import org.maw.wedding.places.Place;
 import org.maw.wedding.places.PlaceList;
 
 import java.util.List;
@@ -62,7 +63,16 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
                 new FetcherListener<PlaceList>() {
                     @Override
                     public void onSuccess(PlaceList result) {
-                        Log.e("SUCCESS", ""+ result.results.size());
+
+                        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                        for (Place place : result.results) {
+                            MarkerOptions marker = new MarkerOptions().position(new LatLng(place.geometry.location.lat, place.geometry.location.lng));
+                            builder.include(marker.getPosition());
+                            mMap.addMarker(marker);
+                        }
+                        LatLngBounds bounds = builder.build();
+
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 25));
                     }
 
                     @Override
@@ -90,7 +100,7 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
                 mMap.addMarker(new MarkerOptions().position(positionLatLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.current_location)));
 
                 LatLngBounds bounds = toBounds(mMediaCity, positionLatLng);
-                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 500));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 500));
             }
         }
         else {

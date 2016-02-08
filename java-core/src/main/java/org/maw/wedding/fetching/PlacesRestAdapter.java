@@ -28,7 +28,7 @@ public class PlacesRestAdapter {
 
         String location = ""+ loc.lat + "," + loc.lng;
 
-        Call<PlaceList> call = service.getNearby("lodging", location, apiKey, "5000");
+        Call<PlaceList> call = service.getNearby("lodging", location, apiKey, "1000");
 
         call.enqueue(new Callback<PlaceList>() {
             @Override
