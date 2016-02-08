@@ -98,7 +98,7 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
 
                         }
                     });
-                    return true;
+                    //return true;
                 }
                 return false;
             }
