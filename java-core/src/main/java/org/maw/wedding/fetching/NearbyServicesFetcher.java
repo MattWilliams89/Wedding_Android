@@ -11,9 +11,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public class PlacesRestAdapter {
+public class NearbyServicesFetcher {
 
-    public interface NearbyHotelService {
+    public interface RadarSearchService {
         @GET("json")
         Call<PlaceList> getNearby(@Query("types") String types, @Query("location") String location, @Query("key") String apiKey, @Query("radius") String radius);
     }
@@ -24,7 +24,7 @@ public class PlacesRestAdapter {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        NearbyHotelService service = retrofit.create(NearbyHotelService.class);
+        RadarSearchService service = retrofit.create(RadarSearchService.class);
 
         String location = ""+ loc.lat + "," + loc.lng;
 

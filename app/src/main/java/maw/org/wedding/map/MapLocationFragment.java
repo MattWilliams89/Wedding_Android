@@ -3,6 +3,7 @@ package maw.org.wedding.map;
 import android.Manifest;
 import android.app.Fragment;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
@@ -12,6 +13,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -19,7 +21,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.maw.wedding.fetching.FetcherListener;
 import org.maw.wedding.fetching.PlaceDetailsFetcher;
-import org.maw.wedding.fetching.PlacesRestAdapter;
+import org.maw.wedding.fetching.NearbyServicesFetcher;
 import org.maw.wedding.places.Place;
 import org.maw.wedding.places.PlaceDetails;
 import org.maw.wedding.places.PlaceList;
@@ -39,8 +41,8 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         getMapAsync(this);
     }
 
@@ -52,17 +54,17 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mMediaCity, 15));
 
         mMap.setTrafficEnabled(true);
-        getCurrentLocation();
+        enableCurrentLocation();
 
-        PlacesRestAdapter placesRestAdapter = new PlacesRestAdapter();
-        placesRestAdapter.fetchNearbyHotels(new org.maw.wedding.places.Location(mMediaCity.latitude, mMediaCity.longitude),
+        NearbyServicesFetcher nearbyServicesFetcher = new NearbyServicesFetcher();
+        nearbyServicesFetcher.fetchNearbyHotels(new org.maw.wedding.places.Location(mMediaCity.latitude, mMediaCity.longitude),
                 getContext().getResources().getString(R.string.google_server_key),
                 new FetcherListener<PlaceList>() {
                     @Override
                     public void onSuccess(PlaceList result) {
                         LatLngBounds.Builder builder = new LatLngBounds.Builder();
                         for (Place place : result.results) {
-                            MarkerOptions marker = new MarkerOptions().position(new LatLng(place.geometry.location.lat, place.geometry.location.lng)).snippet(place.place_id);
+                            MarkerOptions marker = new MarkerOptions().position(new LatLng(place.geometry.location.lat, place.geometry.location.lng)).snippet(place.place_id).icon(BitmapDescriptorFactory.fromResource(R.drawable.hotel_marker_icon));
                             builder.include(marker.getPosition());
                             mMap.addMarker(marker);
                         }
@@ -103,7 +105,7 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
         });
     }
 
-    private void getCurrentLocation() {
+    private void enableCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
@@ -119,7 +121,7 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                getCurrentLocation();
+                enableCurrentLocation();
             }
         }
     }
