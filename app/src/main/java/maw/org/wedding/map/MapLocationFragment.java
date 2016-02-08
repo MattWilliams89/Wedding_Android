@@ -2,10 +2,7 @@ package maw.org.wedding.map;
 
 import android.Manifest;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
@@ -15,17 +12,17 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.maw.wedding.fetching.FetcherListener;
+import org.maw.wedding.fetching.PlaceDetailsFetcher;
 import org.maw.wedding.fetching.PlacesRestAdapter;
 import org.maw.wedding.places.Place;
+import org.maw.wedding.places.PlaceDetails;
 import org.maw.wedding.places.PlaceList;
-
-import java.util.List;
 
 import maw.org.wedding.R;
 
@@ -63,10 +60,9 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
                 new FetcherListener<PlaceList>() {
                     @Override
                     public void onSuccess(PlaceList result) {
-
                         LatLngBounds.Builder builder = new LatLngBounds.Builder();
                         for (Place place : result.results) {
-                            MarkerOptions marker = new MarkerOptions().position(new LatLng(place.geometry.location.lat, place.geometry.location.lng));
+                            MarkerOptions marker = new MarkerOptions().position(new LatLng(place.geometry.location.lat, place.geometry.location.lng)).snippet(place.place_id);
                             builder.include(marker.getPosition());
                             mMap.addMarker(marker);
                         }
@@ -80,45 +76,43 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
                         Log.e("FAILURE", "fail");
                     }
                 });
+
+        HotelsInfoWindowAdapter hotelsInfoWindowAdapter = new HotelsInfoWindowAdapter(getContext());
+
+        mMap.setInfoWindowAdapter(hotelsInfoWindowAdapter);
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(final Marker marker) {
+                if (!marker.getPosition().equals(mMediaCity)) {
+                    new PlaceDetailsFetcher().fetchPlaceForId(marker.getSnippet(), getContext().getResources().getString(R.string.google_server_key), new FetcherListener<PlaceDetails>() {
+                        @Override
+                        public void onSuccess(PlaceDetails result) {
+                            marker.setTitle(result.name);
+                            marker.showInfoWindow();
+                        }
+
+                        @Override
+                        public void onFailure() {
+
+                        }
+                    });
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     private void getCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-            LocationManager lm = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
-            List<String> providers = lm.getProviders(true);
-
-            Location location = null;
-            for (String provider : providers) {
-                location = lm.getLastKnownLocation(provider);
-                if (location != null)
-                    break;
-            }
-            if (location != null) {
-                LatLng positionLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                mMap.addMarker(new MarkerOptions().position(positionLatLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.current_location)));
-
-                LatLngBounds bounds = toBounds(mMediaCity, positionLatLng);
-                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 500));
-            }
+            mMap.setMyLocationEnabled(true);
         }
         else {
             String[] permissionsArray = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
             FragmentCompat.requestPermissions(this, permissionsArray, REQUEST_CODE);
         }
-    }
-
-    public LatLngBounds toBounds(LatLng positionA, LatLng positionB) {
-        double latMin = Math.min(positionA.latitude, positionB.latitude);
-        double latMax = Math.max(positionA.latitude, positionB.latitude);
-
-        double  lngMin = Math.min(positionA.longitude, positionB.longitude);
-        double lngMax = Math.max(positionA.longitude, positionB.longitude);
-
-        LatLng sw = new LatLng(latMin, lngMin);
-        LatLng ne = new LatLng(latMax, lngMax);
-        return new LatLngBounds(sw, ne);
     }
 
     @Override

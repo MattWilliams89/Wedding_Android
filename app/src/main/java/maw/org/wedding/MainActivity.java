@@ -1,9 +1,7 @@
 package maw.org.wedding;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -24,7 +22,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import maw.org.wedding.home.HomeScreen;
 import maw.org.wedding.info_section.InfoScreen;
 import maw.org.wedding.map.MapScreen;
@@ -39,16 +36,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
-
-    @Bind(R.id.fab)
-    FloatingActionButton mActionButton;
+//
+//    @Bind(R.id.fab)
+//    FloatingActionButton mActionButton;
 
     private NavigationEvent mPendingNavEvent;
 
-    @OnClick(R.id.fab)
-    void fabClicked() {
-        Snackbar.make(mActionButton, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-    }
+//    @OnClick(R.id.fab)
+//    void fabClicked() {
+//        Snackbar.make(mActionButton, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+//    }
 
     @Bind(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
