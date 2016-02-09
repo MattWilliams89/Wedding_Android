@@ -50,7 +50,7 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
         mMap = googleMap;
 
         mMap.addMarker(new MarkerOptions().position(mMediaCity).title("MediaCityUk"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mMediaCity, 15));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mMediaCity, 15));
 
         mMap.setTrafficEnabled(true);
         enableCurrentLocation();
