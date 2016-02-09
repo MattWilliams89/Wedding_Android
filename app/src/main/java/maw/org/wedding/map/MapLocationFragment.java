@@ -27,6 +27,7 @@ import org.maw.wedding.places.PlaceDetails;
 import org.maw.wedding.places.PlaceList;
 
 import maw.org.wedding.R;
+import maw.org.wedding.map.Fetching.PlacePhotoFetcher;
 
 
 public class MapLocationFragment extends MapFragment implements OnMapReadyCallback {
@@ -64,7 +65,10 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
                     public void onSuccess(PlaceList result) {
                         LatLngBounds.Builder builder = new LatLngBounds.Builder();
                         for (Place place : result.results) {
-                            MarkerOptions marker = new MarkerOptions().position(new LatLng(place.geometry.location.lat, place.geometry.location.lng)).snippet(place.place_id).icon(BitmapDescriptorFactory.fromResource(R.drawable.hotel_marker_icon));
+                            MarkerOptions marker = new MarkerOptions()
+                                    .position(new LatLng(place.geometry.location.lat, place.geometry.location.lng))
+                                    .snippet(place.place_id)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.hotel_marker_icon));
                             builder.include(marker.getPosition());
                             mMap.addMarker(marker);
                         }
@@ -86,19 +90,26 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
             @Override
             public boolean onMarkerClick(final Marker marker) {
                 if (!marker.getPosition().equals(mMediaCity)) {
-                    new PlaceDetailsFetcher().fetchPlaceForId(marker.getSnippet(), getContext().getResources().getString(R.string.google_server_key), new FetcherListener<PlaceDetails>() {
-                        @Override
-                        public void onSuccess(PlaceDetails result) {
-                            marker.setTitle(result.name);
-                            marker.showInfoWindow();
-                        }
+                    if (marker.getTitle() == null) {
+                        new PlaceDetailsFetcher().fetchPlaceForId(marker.getSnippet(), getContext().getResources().getString(R.string.google_server_key), new FetcherListener<PlaceDetails>() {
+                            @Override
+                            public void onSuccess(PlaceDetails result) {
+                                if (result.photos != null) {
+                                    new PlacePhotoFetcher().fetchPhotoForReference(MapLocationFragment.this.getContext(), result.photos.get(0).photo_reference, MapLocationFragment.this.getContext().getResources().getString(R.string.google_server_key), result.photos.get(0).width, marker);
+                                }
+                                marker.setTitle(result.name);
+                                marker.showInfoWindow();
+                            }
 
-                        @Override
-                        public void onFailure() {
+                            @Override
+                            public void onFailure() {
 
-                        }
-                    });
-                    //return true;
+                            }
+                        });
+                    }
+                    else {
+                        marker.showInfoWindow();
+                    }
                 }
                 return false;
             }
