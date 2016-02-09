@@ -20,8 +20,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.maw.wedding.fetching.FetcherListener;
-import org.maw.wedding.fetching.PlaceDetailsFetcher;
 import org.maw.wedding.fetching.NearbyServicesFetcher;
+import org.maw.wedding.fetching.PlaceDetailsFetcher;
 import org.maw.wedding.places.Place;
 import org.maw.wedding.places.PlaceDetails;
 import org.maw.wedding.places.PlaceList;
@@ -36,6 +36,7 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
 
     private LatLng mMediaCity = new LatLng(53.472704, -2.298379);
     private GoogleMap mMap;
+    private HotelsInfoWindowAdapter mHotelsInfoWindowAdapter;
 
     public static Fragment create() {
         return new MapLocationFragment();
@@ -56,6 +57,9 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
 
         mMap.setTrafficEnabled(true);
         enableCurrentLocation();
+
+        mHotelsInfoWindowAdapter = new HotelsInfoWindowAdapter(getContext());
+        mMap.setInfoWindowAdapter(mHotelsInfoWindowAdapter);
 
         NearbyServicesFetcher nearbyServicesFetcher = new NearbyServicesFetcher();
         nearbyServicesFetcher.fetchNearbyHotels(new org.maw.wedding.places.Location(mMediaCity.latitude, mMediaCity.longitude),
@@ -83,22 +87,38 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
                     }
                 });
 
-        HotelsInfoWindowAdapter hotelsInfoWindowAdapter = new HotelsInfoWindowAdapter(getContext());
-
-        mMap.setInfoWindowAdapter(hotelsInfoWindowAdapter);
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(final Marker marker) {
                 if (!marker.getPosition().equals(mMediaCity)) {
-                    if (marker.getTitle() == null) {
+                    if (!mHotelsInfoWindowAdapter.markerHasData(marker)) {
                         new PlaceDetailsFetcher().fetchPlaceForId(marker.getSnippet(), getContext().getResources().getString(R.string.google_server_key), new FetcherListener<PlaceDetails>() {
                             @Override
                             public void onSuccess(PlaceDetails result) {
+
+                                final MarkerViewModel markerViewModel = new MarkerViewModel();
+                                markerViewModel.title = result.name;
+                                mHotelsInfoWindowAdapter.updateViewModelForMarker(marker, markerViewModel);
+
                                 if (result.photos != null) {
-                                    new PlacePhotoFetcher().fetchPhotoForReference(MapLocationFragment.this.getContext(), result.photos.get(0).photo_reference, MapLocationFragment.this.getContext().getResources().getString(R.string.google_server_key), result.photos.get(0).width, marker);
+                                    new PlacePhotoFetcher().fetchPhotoForReference(MapLocationFragment.this.getContext(),
+                                            result.photos.get(0).photo_reference,
+                                            MapLocationFragment.this.getContext().getResources().getString(R.string.google_server_key),
+                                            result.photos.get(0).width,
+                                            new PhotoRequestListener() {
+
+                                                @Override
+                                                public void onSuccess(String imageURL) {
+                                                    markerViewModel.imageUrl = imageURL;
+                                                    mHotelsInfoWindowAdapter.updateViewModelForMarker(marker, markerViewModel);
+                                                }
+
+                                                @Override
+                                                public void onFailure() {
+
+                                                }
+                                            });
                                 }
-                                marker.setTitle(result.name);
-                                marker.showInfoWindow();
                             }
 
                             @Override

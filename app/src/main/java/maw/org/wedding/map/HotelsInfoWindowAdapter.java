@@ -10,12 +10,17 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import butterknife.ButterKnife;
 import maw.org.wedding.R;
 
 public class HotelsInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     private View mView;
+
+    private Map<String, MarkerViewModel> mMarkerViewModelMap = new HashMap<>();
 
     public HotelsInfoWindowAdapter(Context context) {
         mView = LayoutInflater.from(context).inflate(R.layout.hotel_marker_layout, null);
@@ -24,14 +29,16 @@ public class HotelsInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     @Override
     public View getInfoWindow(final Marker marker) {
 
-        if (marker.getTitle() != null) {
+        MarkerViewModel markerViewModel = mMarkerViewModelMap.get(marker.getId());
+
+        if (markerViewModel != null) {
             ButterKnife.findById(mView, R.id.content).setVisibility(View.VISIBLE);
             TextView hotelNameView = ButterKnife.findById(mView, R.id.hotel_name);
-            hotelNameView.setText(marker.getTitle());
+            hotelNameView.setText(markerViewModel.title);
 
             ImageView hotelImageView = ButterKnife.findById(mView, R.id.hotel_image);
 
-            Picasso.with(mView.getContext()).load(marker.getSnippet()).into(hotelImageView);
+            Picasso.with(mView.getContext()).load(markerViewModel.imageUrl).into(hotelImageView);
         }
         else {
             ButterKnife.findById(mView, R.id.content).setVisibility(View.GONE);
@@ -43,19 +50,30 @@ public class HotelsInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     @Override
     public View getInfoContents(Marker marker) {
 
-        if (marker.getTitle() != null) {
+        MarkerViewModel markerViewModel = mMarkerViewModelMap.get(marker.getId());
+
+        if (markerViewModel != null) {
             ButterKnife.findById(mView, R.id.content).setVisibility(View.VISIBLE);
             TextView hotelNameView = ButterKnife.findById(mView, R.id.hotel_name);
-            hotelNameView.setText(marker.getTitle());
+            hotelNameView.setText(markerViewModel.title);
 
             ImageView hotelImageView = ButterKnife.findById(mView, R.id.hotel_image);
-            Picasso.with(mView.getContext()).load(marker.getSnippet()).into(hotelImageView);
 
+            Picasso.with(mView.getContext()).load(markerViewModel.imageUrl).into(hotelImageView);
         }
         else {
             ButterKnife.findById(mView, R.id.content).setVisibility(View.GONE);
         }
 
         return mView;
+    }
+
+    public void updateViewModelForMarker(Marker marker, MarkerViewModel markerViewModel) {
+        mMarkerViewModelMap.put(marker.getId(), markerViewModel);
+        marker.showInfoWindow();
+    }
+
+    public boolean markerHasData(Marker marker) {
+        return mMarkerViewModelMap.containsKey(marker.getId());
     }
 }
