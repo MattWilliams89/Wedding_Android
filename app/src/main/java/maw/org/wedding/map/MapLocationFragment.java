@@ -21,13 +21,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.maw.wedding.fetching.FetcherListener;
 import org.maw.wedding.fetching.NearbyServicesFetcher;
-import org.maw.wedding.fetching.PlaceDetailsFetcher;
 import org.maw.wedding.places.Place;
-import org.maw.wedding.places.PlaceDetails;
 import org.maw.wedding.places.PlaceList;
 
 import maw.org.wedding.R;
-import maw.org.wedding.map.Fetching.PlacePhotoFetcher;
 
 
 public class MapLocationFragment extends MapFragment implements OnMapReadyCallback {
@@ -36,7 +33,7 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
 
     private LatLng mMediaCity = new LatLng(53.472704, -2.298379);
     private GoogleMap mMap;
-    private HotelsInfoWindowAdapter mHotelsInfoWindowAdapter;
+    private MarkerViewController mMarkerViewController;
 
     public static Fragment create() {
         return new MapLocationFragment();
@@ -58,8 +55,8 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
         mMap.setTrafficEnabled(true);
         enableCurrentLocation();
 
-        mHotelsInfoWindowAdapter = new HotelsInfoWindowAdapter(getContext());
-        mMap.setInfoWindowAdapter(mHotelsInfoWindowAdapter);
+        mMarkerViewController = new HotelsInfoWindowAdapter(getContext());
+        mMap.setInfoWindowAdapter((GoogleMap.InfoWindowAdapter)mMarkerViewController);
 
         NearbyServicesFetcher nearbyServicesFetcher = new NearbyServicesFetcher();
         nearbyServicesFetcher.fetchNearbyHotels(new org.maw.wedding.places.Location(mMediaCity.latitude, mMediaCity.longitude),
@@ -91,41 +88,8 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
             @Override
             public boolean onMarkerClick(final Marker marker) {
                 if (!marker.getPosition().equals(mMediaCity)) {
-                    if (!mHotelsInfoWindowAdapter.markerHasData(marker)) {
-                        new PlaceDetailsFetcher().fetchPlaceForId(marker.getSnippet(), getContext().getResources().getString(R.string.google_server_key), new FetcherListener<PlaceDetails>() {
-                            @Override
-                            public void onSuccess(PlaceDetails result) {
-
-                                final MarkerViewModel markerViewModel = new MarkerViewModel();
-                                markerViewModel.title = result.name;
-                                mHotelsInfoWindowAdapter.updateViewModelForMarker(marker, markerViewModel);
-
-                                if (result.photos != null) {
-                                    new PlacePhotoFetcher().fetchPhotoForReference(MapLocationFragment.this.getContext(),
-                                            result.photos.get(0).photo_reference,
-                                            MapLocationFragment.this.getContext().getResources().getString(R.string.google_server_key),
-                                            result.photos.get(0).width,
-                                            new PhotoRequestListener() {
-
-                                                @Override
-                                                public void onSuccess(String imageURL) {
-                                                    markerViewModel.imageUrl = imageURL;
-                                                    mHotelsInfoWindowAdapter.updateViewModelForMarker(marker, markerViewModel);
-                                                }
-
-                                                @Override
-                                                public void onFailure() {
-
-                                                }
-                                            });
-                                }
-                            }
-
-                            @Override
-                            public void onFailure() {
-
-                            }
-                        });
+                    if (!mMarkerViewController.markerHasData(marker.getId())) {
+                        new MarkerInformationFetcher().fetch(getContext(), marker, mMarkerViewController);
                     }
                     else {
                         marker.showInfoWindow();

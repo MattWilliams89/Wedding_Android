@@ -16,7 +16,7 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import maw.org.wedding.R;
 
-public class HotelsInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
+public class HotelsInfoWindowAdapter implements GoogleMap.InfoWindowAdapter, MarkerViewController {
 
     private View mView;
 
@@ -68,12 +68,14 @@ public class HotelsInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         return mView;
     }
 
+    @Override
     public void updateViewModelForMarker(Marker marker, MarkerViewModel markerViewModel) {
         mMarkerViewModelMap.put(marker.getId(), markerViewModel);
         marker.showInfoWindow();
     }
 
-    public boolean markerHasData(Marker marker) {
-        return mMarkerViewModelMap.containsKey(marker.getId());
+    @Override
+    public boolean markerHasData(String markerID) {
+        return mMarkerViewModelMap.containsKey(markerID);
     }
 }
