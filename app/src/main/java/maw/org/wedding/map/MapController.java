@@ -21,9 +21,6 @@ import org.maw.wedding.places.PlaceList;
 
 import maw.org.wedding.R;
 
-/**
- * Created by willim94 on 13/02/16.
- */
 public class MapController implements OnMapReadyCallback {
 
     private LatLng mMediaCity = new LatLng(53.472704, -2.298379);
@@ -37,19 +34,7 @@ public class MapController implements OnMapReadyCallback {
         mLocationRequester = locationRequester;
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        mMap.addMarker(new MarkerOptions().position(mMediaCity).title("MediaCityUk"));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mMediaCity, 15));
-
-        mMap.setTrafficEnabled(true);
-        mLocationRequester.enableCurrentLocation();
-
-        mMarkerViewController = new HotelsInfoWindowAdapter(mContext);
-        mMap.setInfoWindowAdapter((GoogleMap.InfoWindowAdapter)mMarkerViewController);
-
+    private void fetchNearbyHotels() {
         NearbyServicesFetcher nearbyServicesFetcher = new NearbyServicesFetcher();
         nearbyServicesFetcher.fetchNearbyHotels(new org.maw.wedding.places.Location(mMediaCity.latitude, mMediaCity.longitude),
                 mContext.getResources().getString(R.string.google_server_key),
@@ -75,6 +60,22 @@ public class MapController implements OnMapReadyCallback {
                         Log.e("FAILURE", "fail");
                     }
                 });
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        mMap.addMarker(new MarkerOptions().position(mMediaCity).title("MediaCityUk"));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mMediaCity, 15));
+
+        mMap.setTrafficEnabled(true);
+        mLocationRequester.enableCurrentLocation();
+
+        mMarkerViewController = new HotelsInfoWindowAdapter(mContext);
+        mMap.setInfoWindowAdapter((GoogleMap.InfoWindowAdapter)mMarkerViewController);
+
+        fetchNearbyHotels();
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
