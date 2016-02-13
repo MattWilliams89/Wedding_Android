@@ -63,4 +63,9 @@ public class HotelsInfoWindowAdapter implements GoogleMap.InfoWindowAdapter, Mar
     public boolean markerHasData(String markerID) {
         return mMarkerViewModelMap.containsKey(markerID);
     }
+
+    @Override
+    public MarkerViewModel getMarkerViewModel(String id) {
+        return mMarkerViewModelMap.get(id);
+    }
 }

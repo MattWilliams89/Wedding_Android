@@ -96,6 +96,7 @@ public class MapController implements OnMapReadyCallback {
             @Override
             public void onInfoWindowClick(Marker marker) {
                 Intent i = new Intent(mContext, HotelInformationActivity.class);
+                i.putExtra(HotelInformationActivity.VIEW_MODEL, mMarkerViewController.getMarkerViewModel(marker.getId()));
                 mContext.startActivity(i);
             }
         });

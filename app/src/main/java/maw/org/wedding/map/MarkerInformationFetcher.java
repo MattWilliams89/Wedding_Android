@@ -23,6 +23,7 @@ public class MarkerInformationFetcher {
 
                 final MarkerViewModel markerViewModel = new MarkerViewModel();
                 markerViewModel.title = result.name;
+                markerViewModel.id = result.place_id;
                 markerViewModel.websiteUrl = result.website;
                 markerViewController.updateViewModelForMarker(marker, markerViewModel);
 

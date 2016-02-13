@@ -27,7 +27,6 @@
         </activity>
         <activity
             android:name=".map.hotel.HotelInformationActivity"
-            android:label="@string/title_activity_hotel_information"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
