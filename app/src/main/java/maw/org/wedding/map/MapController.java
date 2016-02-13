@@ -2,7 +2,6 @@ package maw.org.wedding.map;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -20,6 +19,7 @@ import org.maw.wedding.places.Place;
 import org.maw.wedding.places.PlaceList;
 
 import maw.org.wedding.R;
+import maw.org.wedding.map.hotel.HotelInformationActivity;
 
 public class MapController implements OnMapReadyCallback {
 
@@ -95,8 +95,7 @@ public class MapController implements OnMapReadyCallback {
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(marker.getSnippet()));
+                Intent i = new Intent(mContext, HotelInformationActivity.class);
                 mContext.startActivity(i);
             }
         });
