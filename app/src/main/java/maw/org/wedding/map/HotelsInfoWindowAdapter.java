@@ -35,7 +35,7 @@ public class HotelsInfoWindowAdapter implements GoogleMap.InfoWindowAdapter, Mar
     @Override
     public View getInfoContents(Marker marker) {
 
-        MarkerViewModel markerViewModel = mMarkerViewModelMap.get(marker.getId());
+        final MarkerViewModel markerViewModel = mMarkerViewModelMap.get(marker.getId());
 
         if (markerViewModel != null) {
             ButterKnife.findById(mView, R.id.content).setVisibility(View.VISIBLE);
@@ -45,6 +45,8 @@ public class HotelsInfoWindowAdapter implements GoogleMap.InfoWindowAdapter, Mar
             ImageView hotelImageView = ButterKnife.findById(mView, R.id.hotel_image);
 
             Picasso.with(mView.getContext()).load(markerViewModel.imageUrl).into(hotelImageView);
+
+            marker.setSnippet(markerViewModel.websiteUrl);
         }
         else {
             ButterKnife.findById(mView, R.id.content).setVisibility(View.GONE);

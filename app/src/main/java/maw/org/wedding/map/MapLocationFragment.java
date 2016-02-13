@@ -2,7 +2,9 @@ package maw.org.wedding.map;
 
 import android.Manifest;
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentCompat;
@@ -96,6 +98,15 @@ public class MapLocationFragment extends MapFragment implements OnMapReadyCallba
                     }
                 }
                 return false;
+            }
+        });
+
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(marker.getSnippet()));
+                startActivity(i);
             }
         });
     }
