@@ -39,7 +39,9 @@ public class HotelInformationActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        Picasso.with(this).load(mViewModel.imageUrls.get(0)).into(mTopImage);
+        if (mViewModel.imageUrls.size() > 0) {
+            Picasso.with(this).load(mViewModel.imageUrls.get(0)).into(mTopImage);
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
