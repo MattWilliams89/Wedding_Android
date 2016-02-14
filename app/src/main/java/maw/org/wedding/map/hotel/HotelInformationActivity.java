@@ -7,7 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -23,6 +26,9 @@ public class HotelInformationActivity extends AppCompatActivity {
     @Bind(R.id.hotel_information_body)
     TextView mHotelInformationBody;
 
+    @Bind(R.id.topImage)
+    ImageView mTopImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +38,8 @@ public class HotelInformationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_hotel_information);
 
         ButterKnife.bind(this);
+
+        Picasso.with(this).load(mViewModel.imageUrls.get(0)).into(mTopImage);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
