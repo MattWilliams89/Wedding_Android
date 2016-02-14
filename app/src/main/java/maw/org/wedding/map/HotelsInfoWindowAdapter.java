@@ -44,7 +44,9 @@ public class HotelsInfoWindowAdapter implements GoogleMap.InfoWindowAdapter, Mar
 
             ImageView hotelImageView = ButterKnife.findById(mView, R.id.hotel_image);
 
-            Picasso.with(mView.getContext()).load(markerViewModel.imageUrl).into(hotelImageView);
+            if (markerViewModel.imageUrls.size() > 0) {
+                Picasso.with(mView.getContext()).load(markerViewModel.imageUrls.get(0)).into(hotelImageView);
+            }
         }
         else {
             ButterKnife.findById(mView, R.id.content).setVisibility(View.GONE);

@@ -7,7 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import maw.org.wedding.R;
 import maw.org.wedding.map.MarkerViewModel;
 
@@ -17,6 +20,9 @@ public class HotelInformationActivity extends AppCompatActivity {
 
     private MarkerViewModel mViewModel;
 
+    @Bind(R.id.hotel_information_body)
+    TextView mHotelInformationBody;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +30,9 @@ public class HotelInformationActivity extends AppCompatActivity {
         mViewModel = getIntent().getParcelableExtra(VIEW_MODEL);
 
         setContentView(R.layout.activity_hotel_information);
+
+        ButterKnife.bind(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -39,6 +48,8 @@ public class HotelInformationActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        mHotelInformationBody.setText(mViewModel.address);
     }
 
     @Override

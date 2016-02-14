@@ -25,24 +25,27 @@ public class MarkerInformationFetcher {
                 markerViewModel.title = result.name;
                 markerViewModel.id = result.place_id;
                 markerViewModel.websiteUrl = result.website;
+                markerViewModel.phoneNumber = result.formatted_phone_number;
+                markerViewModel.address = result.formatted_address;
+                markerViewModel.rating = result.rating;
                 markerViewController.updateViewModelForMarker(marker, markerViewModel);
 
                 if (result.photos != null) {
 
-                    Photo photo = result.photos.get(0);
+                    for (Photo photo : result.photos) {
+                        new PlacePhotoFetcher().fetchPhotoForReference(context, photo.photo_reference, apiKey, photo.width, new PhotoRequestListener() {
+                            @Override
+                            public void onSuccess(String imageURL) {
+                                markerViewModel.imageUrls.add(imageURL);
+                                markerViewController.updateViewModelForMarker(marker, markerViewModel);
+                            }
 
-                    new PlacePhotoFetcher().fetchPhotoForReference(context, photo.photo_reference, apiKey, photo.width, new PhotoRequestListener() {
-                        @Override
-                        public void onSuccess(String imageURL) {
-                            markerViewModel.imageUrl = imageURL;
-                            markerViewController.updateViewModelForMarker(marker, markerViewModel);
-                        }
+                            @Override
+                            public void onFailure() {
 
-                        @Override
-                        public void onFailure() {
-
-                        }
-                    });
+                            }
+                        });
+                    }
                 }
             }
 
