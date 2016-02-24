@@ -15,11 +15,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.maw.wedding.fetching.FetcherListener;
 import org.maw.wedding.fetching.NearbyServicesFetcher;
-import org.maw.wedding.places.Place;
-import org.maw.wedding.places.PlaceList;
 
 import maw.org.wedding.R;
 import maw.org.wedding.map.hotel.HotelInformationActivity;
+import places.Location;
+import places.Place;
+import places.PlaceList;
 
 public class MapController implements OnMapReadyCallback {
 
@@ -36,16 +37,16 @@ public class MapController implements OnMapReadyCallback {
 
     private void fetchNearbyHotels() {
         NearbyServicesFetcher nearbyServicesFetcher = new NearbyServicesFetcher();
-        nearbyServicesFetcher.fetchNearbyHotels(new org.maw.wedding.places.Location(mMediaCity.latitude, mMediaCity.longitude),
+        nearbyServicesFetcher.fetchNearbyHotels(new Location(mMediaCity.latitude, mMediaCity.longitude),
                 mContext.getResources().getString(R.string.google_server_key),
                 new FetcherListener<PlaceList>() {
                     @Override
                     public void onSuccess(PlaceList result) {
                         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                        for (Place place : result.results) {
+                        for (Place place : result.getResults()) {
                             MarkerOptions marker = new MarkerOptions()
-                                    .position(new LatLng(place.geometry.location.lat, place.geometry.location.lng))
-                                    .snippet(place.place_id)
+                                    .position(new LatLng(place.getGeometry().getLocation().getLat(), place.getGeometry().getLocation().getLng()))
+                                    .snippet(place.getPlace_id())
                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.hotel_marker_icon));
                             builder.include(marker.getPosition());
                             mMap.addMarker(marker);
