@@ -1,8 +1,7 @@
 package org.maw.wedding.fetching
 
-import places.PlaceDetails
-import places.PlaceDetailsWrapper
-
+import org.maw.wedding.places.PlaceDetails
+import org.maw.wedding.places.PlaceDetailsWrapper
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

@@ -1,3 +1,0 @@
-package places
-
-class Location(val lat: Double, val lng: Double)

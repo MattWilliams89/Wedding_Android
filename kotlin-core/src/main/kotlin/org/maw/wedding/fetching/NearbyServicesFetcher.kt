@@ -1,7 +1,7 @@
 package org.maw.wedding.fetching
 
-import places.Location
-import places.PlaceList
+import org.maw.wedding.places.Location
+import org.maw.wedding.places.PlaceList
 
 import retrofit2.Call
 import retrofit2.Callback
