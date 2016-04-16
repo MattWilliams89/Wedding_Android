@@ -9,26 +9,18 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
 import com.squareup.picasso.Picasso
 import maw.org.wedding.R
-import java.util.*
 
-class HotelsInfoWindowAdapter(context: Context) : GoogleMap.InfoWindowAdapter, MarkerViewController {
+class MarkerViewAdapter(val context: Context, val markerViewModelStore: MarkerViewModelStore) : GoogleMap.InfoWindowAdapter {
 
-    private val mView: View
-
-    private val mMarkerViewModelMap = HashMap<String, MarkerViewModel>()
-
-    init {
-        mView = LayoutInflater.from(context).inflate(R.layout.hotel_marker_layout, null)
-    }
+    val mView: View = LayoutInflater.from(context).inflate(R.layout.hotel_marker_layout, null)
 
     override fun getInfoWindow(marker: Marker): View? {
         return null
-
     }
 
     override fun getInfoContents(marker: Marker): View {
 
-        val markerViewModel = mMarkerViewModelMap[marker.id]
+        val markerViewModel = markerViewModelStore.get(marker.id)
 
         if (markerViewModel != null) {
             mView.findViewById(R.id.content).visibility = View.VISIBLE
@@ -45,18 +37,5 @@ class HotelsInfoWindowAdapter(context: Context) : GoogleMap.InfoWindowAdapter, M
         }
 
         return mView
-    }
-
-    override fun updateViewModelForMarker(marker: Marker, markerViewModel: MarkerViewModel) {
-        mMarkerViewModelMap.put(marker.id, markerViewModel)
-        marker.showInfoWindow()
-    }
-
-    override fun markerHasData(markerID: String): Boolean {
-        return mMarkerViewModelMap.containsKey(markerID)
-    }
-
-    override fun getMarkerViewModel(id: String): MarkerViewModel {
-        return mMarkerViewModelMap[id]!!
     }
 }

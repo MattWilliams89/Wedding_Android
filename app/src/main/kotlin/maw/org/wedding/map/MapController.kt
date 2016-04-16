@@ -61,15 +61,16 @@ class MapController(val mContext: Context, val mLocationRequester: LocationReque
             }
         })
 
-        val markerViewController = HotelsInfoWindowAdapter(mContext)
-        googleMap.setInfoWindowAdapter(markerViewController as GoogleMap.InfoWindowAdapter?)
+        val markerViewModelStore = MarkerViewModelStore()
+        val markerViewAdapter = MarkerViewAdapter(mContext, markerViewModelStore)
+        googleMap.setInfoWindowAdapter(markerViewAdapter)
 
         fetchNearbyHotels(googleMap)
 
         googleMap.setOnMarkerClickListener { marker ->
             if (marker.position != mMediaCity) {
-                if (!markerViewController.markerHasData(marker.id)) {
-                    MarkerInformationFetcher().fetch(mContext, marker, markerViewController)
+                if (!markerViewModelStore.exists(marker.id)) {
+                    MarkerInformationFetcher().fetch(mContext, marker, markerViewModelStore)
                 } else {
                     marker.showInfoWindow()
                 }
@@ -79,7 +80,7 @@ class MapController(val mContext: Context, val mLocationRequester: LocationReque
 
         googleMap.setOnInfoWindowClickListener { marker ->
             val i = Intent(mContext, HotelInformationActivity::class.java)
-            i.putExtra(HotelInformationActivity.VIEW_MODEL, markerViewController.getMarkerViewModel(marker.id))
+            i.putExtra(HotelInformationActivity.VIEW_MODEL, markerViewModelStore.get(marker.id))
             mContext.startActivity(i)
         }
     }

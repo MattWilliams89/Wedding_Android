@@ -9,7 +9,7 @@ import org.maw.wedding.fetching.PlaceDetailsFetcher
 import org.maw.wedding.places.PlaceDetails
 
 class MarkerInformationFetcher {
-    fun fetch(context: Context, marker: Marker, markerViewController: MarkerViewController) {
+    fun fetch(context: Context, marker: Marker, markerViewModelStore: MarkerViewModelStore) {
 
         val apiKey = context.resources.getString(R.string.google_server_key)
 
@@ -23,7 +23,9 @@ class MarkerInformationFetcher {
                 markerViewModel.phoneNumber = result.formatted_phone_number
                 markerViewModel.address = result.formatted_address
                 markerViewModel.rating = result.rating
-                markerViewController.updateViewModelForMarker(marker, markerViewModel)
+                markerViewModelStore.putOrUpdate(marker.id, markerViewModel)
+                marker.showInfoWindow()
+
 
                 if (result.photos != null) {
 
@@ -31,7 +33,9 @@ class MarkerInformationFetcher {
                         PlacePhotoFetcher().fetchPhotoForReference(context, photo.photo_reference, apiKey, photo.width, object : PhotoRequestListener {
                             override fun onSuccess(imageURL: String) {
                                 markerViewModel.imageUrls.add(imageURL)
-                                markerViewController.updateViewModelForMarker(marker, markerViewModel)
+                                markerViewModelStore.putOrUpdate(marker.id, markerViewModel)
+                                marker.showInfoWindow()
+
                             }
 
                             override fun onFailure() {
