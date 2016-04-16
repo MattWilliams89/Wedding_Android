@@ -16,16 +16,9 @@ class MarkerInformationFetcher {
         PlaceDetailsFetcher().fetchPlaceForId(marker.snippet, apiKey, object : FetcherListener<PlaceDetails> {
             override fun onSuccess(result: PlaceDetails) {
 
-                val markerViewModel = MarkerViewModel()
-                markerViewModel.title = result.name
-                markerViewModel.id = result.place_id
-                markerViewModel.websiteUrl = result.website
-                markerViewModel.phoneNumber = result.formatted_phone_number
-                markerViewModel.address = result.formatted_address
-                markerViewModel.rating = result.rating
+                val markerViewModel = MarkerViewModel(result.place_id, result.name, arrayListOf(), result.website, result.formatted_address, result.rating, result.formatted_phone_number)
                 markerViewModelStore.putOrUpdate(marker.id, markerViewModel)
                 marker.showInfoWindow()
-
 
                 if (result.photos != null) {
 
@@ -35,7 +28,6 @@ class MarkerInformationFetcher {
                                 markerViewModel.imageUrls.add(imageURL)
                                 markerViewModelStore.putOrUpdate(marker.id, markerViewModel)
                                 marker.showInfoWindow()
-
                             }
 
                             override fun onFailure() {
