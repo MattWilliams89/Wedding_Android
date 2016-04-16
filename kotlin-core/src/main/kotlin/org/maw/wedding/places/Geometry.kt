@@ -1,3 +1,3 @@
 package org.maw.wedding.places
 
-class Geometry(val location: Location)
+data class Geometry(val location: Location)

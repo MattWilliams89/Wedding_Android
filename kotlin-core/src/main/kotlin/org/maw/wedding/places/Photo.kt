@@ -1,6 +1,3 @@
 package org.maw.wedding.places
 
-class Photo {
-    var photo_reference: String = ""
-    var width: String = ""
-}
+data class Photo (val photo_reference: String, val width: String)

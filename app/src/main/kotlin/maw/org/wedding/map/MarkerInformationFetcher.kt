@@ -20,21 +20,18 @@ class MarkerInformationFetcher {
                 markerViewModelStore.putOrUpdate(marker.id, markerViewModel)
                 marker.showInfoWindow()
 
-                if (result.photos != null) {
+                result.photos.forEach { photo ->
+                    PlacePhotoFetcher().fetchPhotoForReference(context, photo.photo_reference, apiKey, photo.width, object : PhotoRequestListener {
+                        override fun onSuccess(imageURL: String) {
+                            markerViewModel.imageUrls.add(imageURL)
+                            markerViewModelStore.putOrUpdate(marker.id, markerViewModel)
+                            marker.showInfoWindow()
+                        }
 
-                    for (photo in result.photos!!) {
-                        PlacePhotoFetcher().fetchPhotoForReference(context, photo.photo_reference, apiKey, photo.width, object : PhotoRequestListener {
-                            override fun onSuccess(imageURL: String) {
-                                markerViewModel.imageUrls.add(imageURL)
-                                markerViewModelStore.putOrUpdate(marker.id, markerViewModel)
-                                marker.showInfoWindow()
-                            }
+                        override fun onFailure() {
 
-                            override fun onFailure() {
-
-                            }
-                        })
-                    }
+                        }
+                    })
                 }
             }
 
