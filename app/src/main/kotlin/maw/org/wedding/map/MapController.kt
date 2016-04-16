@@ -20,7 +20,6 @@ import org.maw.wedding.places.PlaceList
 class MapController(val mContext: Context, val mLocationRequester: LocationRequester) : OnMapReadyCallback {
 
     val mMediaCity = LatLng(53.472704, -2.298379)
-    lateinit var mMarkerViewController: MarkerViewController
 
     private fun fetchNearbyHotels(googleMap: GoogleMap) {
         val nearbyServicesFetcher = NearbyServicesFetcher()
@@ -62,15 +61,15 @@ class MapController(val mContext: Context, val mLocationRequester: LocationReque
             }
         })
 
-        mMarkerViewController = HotelsInfoWindowAdapter(mContext)
-        googleMap.setInfoWindowAdapter(mMarkerViewController as GoogleMap.InfoWindowAdapter?)
+        val markerViewController = HotelsInfoWindowAdapter(mContext)
+        googleMap.setInfoWindowAdapter(markerViewController as GoogleMap.InfoWindowAdapter?)
 
         fetchNearbyHotels(googleMap)
 
         googleMap.setOnMarkerClickListener { marker ->
             if (marker.position != mMediaCity) {
-                if (!mMarkerViewController.markerHasData(marker.id)) {
-                    MarkerInformationFetcher().fetch(mContext, marker, mMarkerViewController as HotelsInfoWindowAdapter)
+                if (!markerViewController.markerHasData(marker.id)) {
+                    MarkerInformationFetcher().fetch(mContext, marker, markerViewController)
                 } else {
                     marker.showInfoWindow()
                 }
@@ -80,7 +79,7 @@ class MapController(val mContext: Context, val mLocationRequester: LocationReque
 
         googleMap.setOnInfoWindowClickListener { marker ->
             val i = Intent(mContext, HotelInformationActivity::class.java)
-            i.putExtra(HotelInformationActivity.VIEW_MODEL, mMarkerViewController.getMarkerViewModel(marker.id))
+            i.putExtra(HotelInformationActivity.VIEW_MODEL, markerViewController.getMarkerViewModel(marker.id))
             mContext.startActivity(i)
         }
     }
