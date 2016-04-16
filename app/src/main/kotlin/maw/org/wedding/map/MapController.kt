@@ -17,13 +17,12 @@ import org.maw.wedding.fetching.NearbyServicesFetcher
 import org.maw.wedding.places.Location
 import org.maw.wedding.places.PlaceList
 
-class MapController(private val mContext: Context, private val mLocationRequester: LocationRequester) : OnMapReadyCallback {
+class MapController(val mContext: Context, val mLocationRequester: LocationRequester) : OnMapReadyCallback {
 
-    private val mMediaCity = LatLng(53.472704, -2.298379)
-    private var mMap: GoogleMap? = null
-    private var mMarkerViewController: MarkerViewController? = null
+    val mMediaCity = LatLng(53.472704, -2.298379)
+    lateinit var mMarkerViewController: MarkerViewController
 
-    private fun fetchNearbyHotels() {
+    private fun fetchNearbyHotels(googleMap: GoogleMap) {
         val nearbyServicesFetcher = NearbyServicesFetcher()
         nearbyServicesFetcher.fetchNearbyHotels(Location(mMediaCity.latitude, mMediaCity.longitude),
                 mContext.resources.getString(R.string.google_server_key),
@@ -33,11 +32,11 @@ class MapController(private val mContext: Context, private val mLocationRequeste
                         for (place in result.results!!) {
                             val marker = MarkerOptions().position(LatLng(place.geometry.location.lat, place.geometry.location.lng)).snippet(place.place_id).icon(BitmapDescriptorFactory.fromResource(R.drawable.hotel_marker_icon))
                             builder.include(marker.position)
-                            mMap!!.addMarker(marker)
+                            googleMap.addMarker(marker)
                         }
                         val bounds = builder.build()
 
-                        mMap!!.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 25))
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 25))
                     }
 
                     override fun onFailure() {
@@ -47,22 +46,30 @@ class MapController(private val mContext: Context, private val mLocationRequeste
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
 
-        mMap!!.addMarker(MarkerOptions().position(mMediaCity).title("MediaCityUk"))
-        mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(mMediaCity, 15f))
+        googleMap.addMarker(MarkerOptions().position(mMediaCity).title("MediaCityUk"))
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mMediaCity, 15f))
 
-        mMap!!.isTrafficEnabled = true
-        mLocationRequester.enableCurrentLocation()
+        googleMap.isTrafficEnabled = true
+
+        mLocationRequester.enableCurrentLocation(object : LocationPermissionListener {
+            override fun locationUnavailable() {
+                googleMap.isMyLocationEnabled = true
+            }
+
+            override fun locationAvailable() {
+                googleMap.isMyLocationEnabled = false
+            }
+        })
 
         mMarkerViewController = HotelsInfoWindowAdapter(mContext)
-        mMap!!.setInfoWindowAdapter(mMarkerViewController as GoogleMap.InfoWindowAdapter?)
+        googleMap.setInfoWindowAdapter(mMarkerViewController as GoogleMap.InfoWindowAdapter?)
 
-        fetchNearbyHotels()
+        fetchNearbyHotels(googleMap)
 
-        mMap!!.setOnMarkerClickListener { marker ->
+        googleMap.setOnMarkerClickListener { marker ->
             if (marker.position != mMediaCity) {
-                if (!mMarkerViewController!!.markerHasData(marker.id)) {
+                if (!mMarkerViewController.markerHasData(marker.id)) {
                     MarkerInformationFetcher().fetch(mContext, marker, mMarkerViewController as HotelsInfoWindowAdapter)
                 } else {
                     marker.showInfoWindow()
@@ -71,19 +78,10 @@ class MapController(private val mContext: Context, private val mLocationRequeste
             false
         }
 
-        mMap!!.setOnInfoWindowClickListener { marker ->
+        googleMap.setOnInfoWindowClickListener { marker ->
             val i = Intent(mContext, HotelInformationActivity::class.java)
-            i.putExtra(HotelInformationActivity.VIEW_MODEL, mMarkerViewController!!.getMarkerViewModel(marker.id))
+            i.putExtra(HotelInformationActivity.VIEW_MODEL, mMarkerViewController.getMarkerViewModel(marker.id))
             mContext.startActivity(i)
         }
-    }
-
-    fun setMyLocationEnabled(locationEnabled: Boolean) {
-        try {
-            mMap!!.isMyLocationEnabled = locationEnabled
-        } catch (e: SecurityException) {
-            e.printStackTrace()
-        }
-
     }
 }

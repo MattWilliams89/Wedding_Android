@@ -15,34 +15,32 @@ import maw.org.wedding.map.MarkerViewModel
 
 class HotelInformationActivity : AppCompatActivity() {
 
-    private var mViewModel: MarkerViewModel? = null
+    lateinit var mMarkerViewModel: MarkerViewModel
 
     val mHotelInformationBody: TextView by bindView(R.id.hotel_information_body)
-
     val mTopImage: ImageView by bindView(R.id.topImage)
+    val mToolbar: Toolbar by bindView(R.id.toolbar)
+    val mFloatingButton: FloatingActionButton by bindView(R.id.fab)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mViewModel = intent.getParcelableExtra<MarkerViewModel>(VIEW_MODEL)
+        mMarkerViewModel = intent.getParcelableExtra<MarkerViewModel>(VIEW_MODEL)
 
         setContentView(R.layout.activity_hotel_information)
 
-        if (mViewModel!!.imageUrls!!.size > 0) {
-            Picasso.with(this).load(mViewModel!!.imageUrls!![0]).into(mTopImage)
+        if (mMarkerViewModel.imageUrls.size > 0) {
+            Picasso.with(this).load(mMarkerViewModel.imageUrls[0]).into(mTopImage)
         }
 
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
-        setSupportActionBar(toolbar)
-
+        setSupportActionBar(mToolbar)
         supportActionBar!!.setHomeButtonEnabled(true)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.title = mViewModel!!.title
+        supportActionBar!!.title = mMarkerViewModel.title
 
-        val fab = findViewById(R.id.fab) as FloatingActionButton
-        fab.setOnClickListener { view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show() }
+        mFloatingButton.setOnClickListener { view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show() }
 
-        mHotelInformationBody.text = mViewModel!!.address
+        mHotelInformationBody.text = mMarkerViewModel.address
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -56,7 +54,6 @@ class HotelInformationActivity : AppCompatActivity() {
     }
 
     companion object {
-
         val VIEW_MODEL = "viewModel"
     }
 }

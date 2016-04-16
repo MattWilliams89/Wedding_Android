@@ -12,7 +12,8 @@ import com.google.android.gms.maps.MapFragment
 
 class MapLocationFragment : MapFragment(), LocationRequester {
 
-    private var mMapController: MapController? = null
+    lateinit var mMapController: MapController
+    lateinit var mLocationPermissionListener: LocationPermissionListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,12 +22,12 @@ class MapLocationFragment : MapFragment(), LocationRequester {
         getMapAsync(mMapController)
     }
 
-    override fun enableCurrentLocation() {
+    override fun enableCurrentLocation(locationPermissionListener: LocationPermissionListener) {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            mMapController!!.setMyLocationEnabled(true)
+            locationPermissionListener.locationAvailable()
         } else {
             val permissionsArray = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+            mLocationPermissionListener = locationPermissionListener
             FragmentCompat.requestPermissions(this, permissionsArray, REQUEST_CODE)
         }
     }
@@ -34,7 +35,10 @@ class MapLocationFragment : MapFragment(), LocationRequester {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                enableCurrentLocation()
+                mLocationPermissionListener.locationAvailable()
+            }
+            else {
+                mLocationPermissionListener.locationUnavailable()
             }
         }
     }
