@@ -1,11 +1,8 @@
 package org.maw.wedding.navigation
 
-import java.util.*
-
 class NavigationEventBus : Bus {
 
-    private val mListenerMap = ArrayList<EventListener>()
-
+    val mListenerMap: MutableList<EventListener> = arrayListOf()
 
     override fun subscribe(listener: EventListener) {
         mListenerMap.add(listener)

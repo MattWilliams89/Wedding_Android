@@ -1,10 +1,8 @@
 package maw.org.wedding.map
 
-import java.util.*
-
 class MarkerViewModelStore: DataStore<MarkerViewModel> {
 
-    val map: HashMap<String, MarkerViewModel> = HashMap()
+    val map: MutableMap<String, MarkerViewModel> = hashMapOf()
 
     override fun putOrUpdate(key: String, item: MarkerViewModel) {
         map.put(key, item)
