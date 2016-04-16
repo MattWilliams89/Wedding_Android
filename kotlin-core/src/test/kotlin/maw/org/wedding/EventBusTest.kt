@@ -1,42 +1,31 @@
 package maw.org.wedding
 
+import maw.org.wedding.util.TestableNavigator
+import maw.org.wedding.util.TestableScreen
+import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
-import org.maw.wedding.navigation.*
-import org.mockito.Mockito
-import org.mockito.Mockito.mock
+import org.maw.wedding.navigation.Event
+import org.maw.wedding.navigation.NavigationEventBus
+import org.maw.wedding.navigation.NavigationEventController
+import org.maw.wedding.navigation.ScreenEvent
 import java.util.*
 
 class EventBusTest {
 
+    lateinit var navigator: TestableNavigator
+
+    @Before
+    fun setup() {
+        navigator = TestableNavigator()
+    }
+
     @Test
     fun testEventBusEventsAreReceived() {
-        val eventBus = EventBus()
-        val mockNavigator = mock(Navigator::class.java)
-        val navigationController = NavigationEventController(mockNavigator, eventBus)
+        val eventBus = NavigationEventBus()
+        val navigationController = NavigationEventController(navigator, eventBus)
 
-        val screenEvent = ScreenEvent(mock(Screen::class.java), 1)
-
-        val screenEvents = ArrayList<ScreenEvent>()
-        screenEvents.add(screenEvent)
-
-        navigationController.registerForScreenEvents(screenEvents)
-        navigationController.onReady()
-
-        val navigationEvent = NavigationEvent(1)
-
-        eventBus.post(navigationEvent)
-
-        Mockito.verify(mockNavigator).navigate(screenEvent)
-    }
-
-    @Test
-    fun testListenerOnlyReceivesEventOfCorrectType() {
-
-        val eventBus = EventBus()
-        val mockNavigator = mock(Navigator::class.java)
-        val navigationController = NavigationEventController(mockNavigator, eventBus)
-
-        val screenEvent = ScreenEvent(mock(Screen::class.java), 1)
+        val screenEvent = ScreenEvent(TestableScreen(), 1)
 
         val screenEvents = ArrayList<ScreenEvent>()
         screenEvents.add(screenEvent)
@@ -44,18 +33,11 @@ class EventBusTest {
         navigationController.registerForScreenEvents(screenEvents)
         navigationController.onReady()
 
-        val navigationEvent = object : Event {
-            override fun getEventId(): Int {
-                return 1
-            }
-
-            override fun getEventType(): Bus.EVENT_TYPE {
-                return Bus.EVENT_TYPE.OTHER
-            }
-        }
+        val navigationEvent = Event(1)
 
         eventBus.post(navigationEvent)
 
-        Mockito.verifyZeroInteractions(mockNavigator)
+        Assert.assertEquals(navigator.screenEvent, screenEvent)
     }
+
 }

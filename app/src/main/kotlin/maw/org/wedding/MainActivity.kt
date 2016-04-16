@@ -18,14 +18,12 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, Navigator {
 
-    private var mPendingNavEvent: NavigationEvent? = null
-    private var mNavigationController: NavigationEventController? = null
-    private var mEventBus: Bus? = null
+    var mPendingNavEvent: Event? = null
+    lateinit var mNavigationController: NavigationEventController
+    lateinit var mEventBus: Bus
 
     val mNavigationView: NavigationView by bindView(R.id.nav_view)
-
     val mToolbar: Toolbar by bindView(R.id.toolbar)
-
     val mDrawerLayout: DrawerLayout by bindView(R.id.drawer_layout)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +38,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             override fun onDrawerClosed(drawerView: View?) {
                 super.onDrawerClosed(drawerView)
                 if (mPendingNavEvent != null) {
-                    mEventBus!!.post(mPendingNavEvent as NavigationEvent)
+                    mEventBus.post(mPendingNavEvent as Event)
                     mPendingNavEvent = null
                 }
             }
@@ -50,29 +48,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         mNavigationView.setNavigationItemSelectedListener(this)
 
-        mEventBus = EventBus()
-        mNavigationController = NavigationEventController(this, mEventBus as EventBus)
+        mEventBus = NavigationEventBus()
+        mNavigationController = NavigationEventController(this, mEventBus)
 
         val events = ArrayList<ScreenEvent>()
         events.add(ScreenEvent(HomeScreen(this), R.id.home_event))
         events.add(ScreenEvent(InfoScreen(this), R.id.info_event))
         events.add(ScreenEvent(MapScreen(this), R.id.map_event))
 
-        mNavigationController!!.registerForScreenEvents(events)
+        mNavigationController.registerForScreenEvents(events)
 
         if (savedInstanceState == null) {
-            mNavigationController!!.onEvent(NavigationEvent(R.id.home_event))
+            mNavigationController.onEvent(Event(R.id.home_event))
         }
     }
 
     override fun onStart() {
         super.onStart()
-        mNavigationController!!.onReady()
+        mNavigationController.onReady()
     }
 
     override fun onStop() {
         super.onStop()
-        mNavigationController!!.cleanUp()
+        mNavigationController.cleanUp()
     }
 
     override fun onBackPressed() {
@@ -84,7 +82,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        mPendingNavEvent = NavigationEvent(item.itemId)
+        mPendingNavEvent = Event(item.itemId)
         val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
         drawer.closeDrawer(GravityCompat.START)
         return true
