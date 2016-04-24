@@ -11,20 +11,25 @@ node('master') {
     runUnitTests()
 }
 
+
 stage 'Build'
-node('master') {
-    unstash 'sources'
-    buildDebug()
-//    sh 'cp app/build/outputs/apk/app-release.apk wedding_app.apk'
-//    step([$class: 'ArtifactArchiver', artifacts: '*.apk'])
+def branches = [:]
+branches["0"] = {
+    node('master') {
+        unstash 'sources'
+        buildDebug()
+    }
 }
-node('test') {
-    unstash 'sources'
-    buildRelease()
-    sh 'cp app/build/outputs/apk/app-release.apk wedding_app.apk'
-    step([$class: 'ArtifactArchiver', artifacts: '*.apk'])
+branches["1"] = {
+    node('test') {
+        unstash 'sources'
+        buildRelease()
+        sh 'cp app/build/outputs/apk/app-release.apk wedding_app.apk'
+        step([$class: 'ArtifactArchiver', artifacts: '*.apk'])
+    }
 }
 
+parallel branches
 
 private void runUnitTests() {
     sh './gradlew testDebug'
