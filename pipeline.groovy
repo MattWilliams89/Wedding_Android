@@ -1,14 +1,17 @@
-
+stage 'TEST'
 node {
-
-    stage 'CHECKOUT'
     checkout scm
-
-    stage 'TEST'
     runUnitTests()
+}
 
-    stage 'BUILD'
+
+stage 'Build'
+node {
+    checkout scm
     buildDebug()
+}
+node{
+    checkout scm
     buildRelease()
 }
 
