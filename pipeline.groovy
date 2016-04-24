@@ -16,7 +16,7 @@ node{
     unstash 'sources'
     buildRelease()
     sh 'cp app/build/outputs/apk/app-release.apk wedding_app.apk'
-    step([$class: 'APKArchiver', artifacts: '*.apk'])
+    step([$class: 'ArtifactArchiver', artifacts: '*.apk'])
 }
 
 
