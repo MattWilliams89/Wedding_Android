@@ -15,13 +15,13 @@ node('master') {
 stage 'Build'
 def branches = [:]
 branches["devBuild"] = {
-    node('test') {
+    node('master') {
         unstash 'sources'
         buildDebug()
     }
 }
 branches["releaseBuild"] = {
-    node('master') {
+    node('test') {
         unstash 'sources'
         buildRelease()
         sh 'cp app/build/outputs/apk/app-release.apk wedding_app.apk'
@@ -33,6 +33,7 @@ parallel branches
 
 stage 'Release'
 node('master') {
+    unstash 'sources'
     uploadToHockey()
 }
 
