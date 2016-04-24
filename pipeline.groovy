@@ -22,10 +22,7 @@ private void runUnitTests() {
     sh './gradlew testDebug'
 }
 
-private void buildDebug() {
-    sh './gradlew assembleDebug'
-}
-
 private void buildRelease() {
+    sh 'cp /gradle.properties .'
     sh './gradlew assembleRelease'
 }
