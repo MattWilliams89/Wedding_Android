@@ -33,7 +33,6 @@ parallel branches
 
 stage 'Release'
 node('master') {
-    unstash 'sources'
     uploadToHockey()
 }
 
@@ -51,8 +50,6 @@ private void buildRelease() {
 }
 
 private void uploadToHockey() {
-    sh 'cp /gradle.properties .'
-
     sh 'curl \\' +
             '  -F "status=2" \\' +
             '  -F "notify=1" \\' +
