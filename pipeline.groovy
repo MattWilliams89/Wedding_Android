@@ -1,15 +1,13 @@
-stage 'TEST'
-node {
-    runUnitTests()
-}
 
-stage 'BUILD'
-node{
+node {
+    stage 'TEST'
+    runUnitTests()
+
+    stage 'BUILD'
     buildDebug()
-}
-node{
     buildRelease()
 }
+
 
 private void runUnitTests() {
     sh './gradlew testDebug'
