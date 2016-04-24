@@ -1,12 +1,12 @@
 stage 'Checkout'
-node {
+node('master') {
     checkout scm
     sh './gradlew clean'
     stash name: 'sources'
 }
 
 stage 'Test'
-node {
+node('master') {
     unstash 'sources'
     runUnitTests()
 }
