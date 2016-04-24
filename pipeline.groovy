@@ -33,6 +33,7 @@ parallel branches
 
 stage 'Release'
 node('master') {
+    unstash 'sources'
     uploadToHockey()
 }
 
