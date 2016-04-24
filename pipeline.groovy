@@ -15,13 +15,13 @@ node('master') {
 stage 'Build'
 def branches = [:]
 branches["devBuild"] = {
-    node('master') {
+    node('test') {
         unstash 'sources'
         buildDebug()
     }
 }
 branches["releaseBuild"] = {
-    node('test') {
+    node('master') {
         unstash 'sources'
         buildRelease()
         sh 'cp app/build/outputs/apk/app-release.apk wedding_app.apk'
