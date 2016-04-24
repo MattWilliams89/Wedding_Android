@@ -31,6 +31,12 @@ branches["releaseBuild"] = {
 
 parallel branches
 
+stage 'Release'
+node('master') {
+    unstash 'sources'
+    uploadToHockey()
+}
+
 private void runUnitTests() {
     sh './gradlew testDebug'
 }
@@ -42,4 +48,15 @@ private void buildDebug() {
 private void buildRelease() {
     sh 'cp /gradle.properties .'
     sh './gradlew assembleRelease'
+}
+
+private void uploadToHockey() {
+    sh 'cp /gradle.properties .'
+
+    sh 'curl \\' +
+            '  -F "status=2" \\' +
+            '  -F "notify=1" \\' +
+            '  -F "ipa=@wedding_app.apk" \\' +
+            '  -H "X-HockeyAppToken: "' + "$HOCKEY_API_KEY" + ' \\' +
+            '  https://rink.hockeyapp.net/api/2/apps/6a61f0dc39884d0c969068bac05a1af9/app_versions/upload'
 }
