@@ -12,7 +12,7 @@ node {
 }
 
 stage 'Build'
-node{
+node('test') {
     unstash 'sources'
     buildRelease()
     sh 'cp app/build/outputs/apk/app-release.apk wedding_app.apk'
