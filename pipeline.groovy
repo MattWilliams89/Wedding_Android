@@ -1,5 +1,9 @@
 
 node {
+
+    stage 'CHECKOUT'
+    checkout scm
+
     stage 'TEST'
     runUnitTests()
 
