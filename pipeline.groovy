@@ -14,13 +14,13 @@ node('master') {
 
 stage 'Build'
 def branches = [:]
-branches["0"] = {
+branches["devBuild"] = {
     node('master') {
         unstash 'sources'
         buildDebug()
     }
 }
-branches["1"] = {
+branches["releaseBuild"] = {
     node('test') {
         unstash 'sources'
         buildRelease()
