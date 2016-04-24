@@ -1,17 +1,19 @@
-stage 'TEST'
+stage 'Checkout'
 node {
     checkout scm
+    sh './gradlew clean'
+    stash name: 'sources'
+}
+
+stage 'Test'
+node {
+    unstash 'sources'
     runUnitTests()
 }
 
-
 stage 'Build'
-node {
-    checkout scm
-    buildDebug()
-}
 node{
-    checkout scm
+    unstash 'sources'
     buildRelease()
 }
 
