@@ -24,7 +24,7 @@ branches["releaseBuild"] = {
     node('test') {
         unstash 'sources'
         buildRelease()
-        sh 'cp app/build/outputs/apk/app-release.apk wedding_app.apk'
+        sh 'cp app/build/outputs/apk/app-release.apk wedding_app_' + "${env.BUILD_NUMBER}" + '.apk'
         step([$class: 'ArtifactArchiver', artifacts: '*.apk'])
     }
 }
