@@ -51,7 +51,7 @@ private void buildRelease() {
 }
 
 private void uploadToHockey() {
-    unarchive '*.apk'
+    unarchive mapping:['*.apk' : '.']
 
     sh 'curl \\' +
             '  -F "status=2" \\' +
