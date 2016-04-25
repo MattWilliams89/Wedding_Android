@@ -54,7 +54,7 @@ private void uploadToHockey() {
     sh 'curl \\' +
             '  -F "status=2" \\' +
             '  -F "notify=1" \\' +
-            '  -F "ipa=@wedding_app.apk" \\' +
+            '  -F "ipa=@wedding_app"'+"${env.BUILD_NUMBER}"+'".apk" \\' +
             '  -H "X-HockeyAppToken: "' + HOCKEY_API_KEY + ' \\' +
             '  https://rink.hockeyapp.net/api/2/apps/6a61f0dc39884d0c969068bac05a1af9/app_versions/upload'
 }
