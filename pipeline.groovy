@@ -25,7 +25,7 @@ branches["releaseBuild"] = {
         unstash 'sources'
         buildRelease()
         sh 'cp app/build/outputs/apk/app-release.apk wedding_app_' + "${env.BUILD_NUMBER}" + '.apk'
-        step([$class: 'ArtifactArchiver', artifacts: '*.apk'])
+        archive '*.apk'
     }
 }
 
@@ -51,8 +51,8 @@ private void buildRelease() {
 }
 
 private void uploadToHockey() {
-    step ([$class: 'CopyArtifact',
-           filter: '*.apk']);
+    unarchive '*.apk'
+
     sh 'curl \\' +
             '  -F "status=2" \\' +
             '  -F "notify=1" \\' +
