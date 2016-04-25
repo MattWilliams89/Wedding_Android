@@ -38,7 +38,7 @@ node('master') {
 }
 
 private void runUnitTests() {
-    sh './gradlew testDebug'
+    sh './gradlew test'
 }
 
 private void buildDebug() {
