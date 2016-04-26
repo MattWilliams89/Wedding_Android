@@ -40,4 +40,5 @@ class EventBusTest {
         Assert.assertEquals(navigator.screenEvent, screenEvent)
     }
 
+
 }
