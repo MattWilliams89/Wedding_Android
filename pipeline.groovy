@@ -4,6 +4,8 @@ node('master') {
     checkout scm
     sh './gradlew clean'
     stash name: 'sources'
+
+    APK_NAME = 'wedding_app_'+ "${env.BUILD_NUMBER}" + '.apk'
 }
 
 stage 'Test'
@@ -25,8 +27,8 @@ branches["releaseBuild"] = {
     node('test') {
         cleanUnstash('sources')
         buildRelease()
-        sh 'cp app/build/outputs/apk/app-release.apk wedding_app_' + "${env.BUILD_NUMBER}" + '.apk'
-        archive ''+ "${env.BUILD_NUMBER}" + '.apk'
+        sh 'cp app/build/outputs/apk/app-release.apk ' + APK_NAME
+        archive APK_NAME
     }
 }
 
@@ -58,12 +60,12 @@ private void buildRelease() {
 
 private void uploadToHockey() {
 
-    unarchive mapping:["${env.BUILD_NUMBER}.apk" : '.']
+    unarchive mapping:[APK_NAME : '.']
 
     sh 'curl \\' +
             '  -F "status=2" \\' +
             '  -F "notify=1" \\' +
-            '  -F "ipa=@wedding_app_"' + "${env.BUILD_NUMBER}"+'".apk" \\' +
+            '  -F "ipa=@"' + APK_NAME + ' \\' +
             '  -H "X-HockeyAppToken: "' + HOCKEY_API_KEY + ' \\' +
             '  https://rink.hockeyapp.net/api/2/apps/6a61f0dc39884d0c969068bac05a1af9/app_versions/upload'
 }
