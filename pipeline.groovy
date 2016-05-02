@@ -14,26 +14,23 @@ node('master') {
     runUnitTests()
 }
 
-checkpoint 'Tests complete'
-
 stage 'Build'
-def branches = [:]
-branches["devBuild"] = {
-    node('master') {
-        cleanUnstash('sources')
-        buildDebug()
-    }
-}
-branches["releaseBuild"] = {
-    node('test') {
-        cleanUnstash('sources')
-        buildRelease()
-        sh 'cp app/build/outputs/apk/app-release.apk ' + APK_NAME
-        stash includes: APK_NAME, name: 'apk'
-    }
-}
-
-parallel branches
+parallel (
+        "devBuild" : {
+            node('master') {
+                cleanUnstash('sources')
+                buildDebug()
+            }
+        },
+        "releaseBuild": {
+            node('test') {
+                cleanUnstash('sources')
+                buildRelease()
+                sh 'cp app/build/outputs/apk/app-release.apk ' + APK_NAME
+                stash includes: APK_NAME, name: 'apk'
+            }
+        }
+)
 
 stage 'Release'
 node('master') {
