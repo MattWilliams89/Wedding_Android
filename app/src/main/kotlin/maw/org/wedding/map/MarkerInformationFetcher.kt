@@ -6,7 +6,7 @@ import maw.org.wedding.R
 import maw.org.wedding.map.Fetching.PlacePhotoFetcher
 import org.maw.wedding.fetching.FetcherListener
 import org.maw.wedding.fetching.PlaceDetailsFetcher
-import org.maw.wedding.places.PlaceDetails
+import org.maw.wedding.model.PlaceDetails
 
 class MarkerInformationFetcher {
     fun fetch(context: Context, marker: Marker, markerViewModelStore: MarkerViewModelStore) {

@@ -1,4 +1,4 @@
-package org.maw.wedding.places
+package org.maw.wedding.model
 
 class PlaceDetails {
     val place_id: String = ""

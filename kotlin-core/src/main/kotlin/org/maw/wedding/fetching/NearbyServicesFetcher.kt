@@ -1,7 +1,7 @@
 package org.maw.wedding.fetching
 
-import org.maw.wedding.places.Location
-import org.maw.wedding.places.PlaceList
+import org.maw.wedding.model.Location
+import org.maw.wedding.model.PlaceList
 
 import retrofit2.Call
 import retrofit2.Callback
@@ -15,7 +15,7 @@ class NearbyServicesFetcher {
 
     interface RadarSearchService {
         @GET("json")
-        fun getNearby(@Query("types") types: String, @Query("location") location: String, @Query("key") apiKey: String, @Query("radius") radius: String): Call<PlaceList>
+        fun getNearby(@Query("type") types: String, @Query("location") location: String, @Query("key") apiKey: String, @Query("radius") radius: String): Call<PlaceList>
     }
 
     fun fetchNearbyHotels(loc: Location, apiKey: String, fetcherListener: FetcherListener<PlaceList>) {

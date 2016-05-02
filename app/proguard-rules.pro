@@ -7,3 +7,5 @@
 -keepattributes Exceptions
 
 -dontwarn android.app.Notification
+
+-keep class org.maw.wedding.model.** { *; }

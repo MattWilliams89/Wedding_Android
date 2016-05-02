@@ -14,8 +14,8 @@ import maw.org.wedding.R
 import maw.org.wedding.map.hotel.HotelInformationActivity
 import org.maw.wedding.fetching.FetcherListener
 import org.maw.wedding.fetching.NearbyServicesFetcher
-import org.maw.wedding.places.Location
-import org.maw.wedding.places.PlaceList
+import org.maw.wedding.model.Location
+import org.maw.wedding.model.PlaceList
 
 class MapController(val mContext: Context, val mLocationRequester: LocationRequester) : OnMapReadyCallback {
 
