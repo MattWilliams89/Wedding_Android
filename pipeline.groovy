@@ -1,5 +1,6 @@
 stage 'Checkout'
 node('master') {
+    deleteDir()
     checkout scm
     sh './gradlew clean'
     stash name: 'sources'
@@ -7,7 +8,7 @@ node('master') {
 
 stage 'Test'
 node('master') {
-    unstash 'sources'
+    cleanUnstash('sources')
     runUnitTests()
 }
 
@@ -16,16 +17,16 @@ stage 'Build'
 def branches = [:]
 branches["devBuild"] = {
     node('master') {
-        unstash 'sources'
+        cleanUnstash('sources')
         buildDebug()
     }
 }
 branches["releaseBuild"] = {
     node('test') {
-        unstash 'sources'
+        cleanUnstash('sources')
         buildRelease()
         sh 'cp app/build/outputs/apk/app-release.apk wedding_app_' + "${env.BUILD_NUMBER}" + '.apk'
-        archive '*.apk'
+        archive "${env.BUILD_NUMBER}" + '.apk'
     }
 }
 
@@ -33,8 +34,13 @@ parallel branches
 
 stage 'Release'
 node('master') {
-    unstash 'sources'
+    cleanUnstash('sources')
     uploadToHockey()
+}
+
+private void cleanUnstash(String source) {
+    deleteDir()
+    unstash source
 }
 
 private void runUnitTests() {
