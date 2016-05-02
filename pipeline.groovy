@@ -28,7 +28,7 @@ branches["releaseBuild"] = {
         cleanUnstash('sources')
         buildRelease()
         sh 'cp app/build/outputs/apk/app-release.apk ' + APK_NAME
-        archive APK_NAME
+        stash APK_NAME
     }
 }
 
@@ -60,7 +60,7 @@ private void buildRelease() {
 
 private void uploadToHockey() {
 
-    unarchive mapping:[APK_NAME : '.']
+    unstash APK_NAME
 
     sh 'curl \\' +
             '  -F "status=2" \\' +
