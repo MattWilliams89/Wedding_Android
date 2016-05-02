@@ -58,9 +58,7 @@ private void buildRelease() {
 
 private void uploadToHockey() {
 
-    def apkName = '' + "${env.BUILD_NUMBER}" + '.apk'
-
-    unarchive mapping:[apkName : '.']
+    unarchive mapping:["${env.BUILD_NUMBER}.apk" : '.']
 
     sh 'curl \\' +
             '  -F "status=2" \\' +
