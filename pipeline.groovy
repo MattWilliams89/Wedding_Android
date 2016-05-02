@@ -14,6 +14,7 @@ node('master') {
     runUnitTests()
 }
 
+checkpoint 'Tests complete'
 
 stage 'Build'
 def branches = [:]
