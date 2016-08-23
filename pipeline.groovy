@@ -25,7 +25,7 @@ parallel (
         "releaseBuild": {
             node('master') {
                 cleanUnstash('sources')
-                def externalMethod = load("Wedding/steps.groovy")
+                def externalMethod = load("steps.groovy")
                 externalMethod.step()
             }
         }
