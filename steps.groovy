@@ -1,4 +1,4 @@
-public step() {
+def step() {
     node('test') {
         cleanUnstash('sources')
         buildRelease()
