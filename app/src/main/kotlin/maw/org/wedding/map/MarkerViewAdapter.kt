@@ -28,9 +28,9 @@ class MarkerViewAdapter(val context: Context, val markerViewModelStore: MarkerVi
             hotelNameView.text = markerViewModel.title
 
             val hotelImageView = mView.findViewById(R.id.hotel_image) as ImageView
-
+            hotelImageView.setImageDrawable(null)
             if (markerViewModel.imageUrls.size > 0) {
-                Picasso.with(mView.context).load(markerViewModel.imageUrls[0]).into(hotelImageView)
+                Picasso.with(mView.context).load(markerViewModel.imageUrls.get(0)).into(hotelImageView)
             }
         } else {
             mView.findViewById(R.id.content).visibility = View.GONE

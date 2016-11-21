@@ -3,7 +3,7 @@ package maw.org.wedding.map
 import android.os.Parcel
 import android.os.Parcelable
 
-data class MarkerViewModel(val id: String, val title: String, val imageUrls: MutableList<String>, val websiteUrl: String, val address: String, val rating: String, val phoneNumber: String) : Parcelable {
+data class MarkerViewModel(val id: String, val title: String, val imageUrls: MutableList<String> = mutableListOf(), val websiteUrl: String?, val address: String?, val rating: String?, val phoneNumber: String?) : Parcelable {
 
     constructor(source: Parcel) : this(source.readString(), source.readString(), source.createStringArrayList(), source.readString(), source.readString(), source.readString(), source.readString())
 

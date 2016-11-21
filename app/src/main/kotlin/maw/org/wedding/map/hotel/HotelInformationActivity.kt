@@ -30,7 +30,7 @@ class HotelInformationActivity : AppCompatActivity() {
         setContentView(R.layout.activity_hotel_information)
 
         if (mMarkerViewModel.imageUrls.size > 0) {
-            Picasso.with(this).load(mMarkerViewModel.imageUrls[0]).into(mTopImage)
+            Picasso.with(this).load(mMarkerViewModel.imageUrls.get(0)).into(mTopImage)
         }
 
         setSupportActionBar(mToolbar)

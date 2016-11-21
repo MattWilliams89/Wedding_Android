@@ -16,11 +16,11 @@ class MarkerInformationFetcher {
         PlaceDetailsFetcher().fetchPlaceForId(marker.snippet, apiKey, object : FetcherListener<PlaceDetails> {
             override fun onSuccess(result: PlaceDetails) {
 
-                val markerViewModel = MarkerViewModel(result.place_id, result.name, arrayListOf(), result.website, result.formatted_address, result.rating, result.formatted_phone_number)
+                val markerViewModel = MarkerViewModel(result.place_id, result.name, arrayListOf(), result.website, result.formattedAddress, result.rating, result.formattedPhoneNumber)
                 markerViewModelStore.putOrUpdate(marker.id, markerViewModel)
                 marker.showInfoWindow()
 
-                result.photos.forEach { photo ->
+                result.photos?.forEach { photo ->
                     PlacePhotoFetcher().fetchPhotoForReference(context, photo.photo_reference, apiKey, photo.width, object : PhotoRequestListener {
                         override fun onSuccess(imageURL: String) {
                             markerViewModel.imageUrls.add(imageURL)
