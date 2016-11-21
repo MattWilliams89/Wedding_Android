@@ -1,6 +1,7 @@
 package maw.org.wedding
 
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
@@ -16,13 +17,12 @@ import maw.org.wedding.map.MapScreen
 import org.maw.wedding.navigation.*
 import java.util.*
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, Navigator {
+class MainActivity : AppCompatActivity(), Navigator, BottomNavigationView.OnNavigationItemSelectedListener {
 
-    var mPendingNavEvent: Event? = null
     lateinit var mNavigationController: NavigationEventController
     lateinit var mEventBus: Bus
 
-    val mNavigationView: NavigationView by bindView(R.id.nav_view)
+    val mNavigationView: BottomNavigationView by bindView(R.id.bottom_navigation)
     val mToolbar: Toolbar by bindView(R.id.toolbar)
     val mDrawerLayout: DrawerLayout by bindView(R.id.drawer_layout)
 
@@ -32,21 +32,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         setSupportActionBar(mToolbar)
 
-        val toggle = object : ActionBarDrawerToggle(
-                this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
-
-            override fun onDrawerClosed(drawerView: View?) {
-                super.onDrawerClosed(drawerView)
-                if (mPendingNavEvent != null) {
-                    mEventBus.post(mPendingNavEvent as Event)
-                    mPendingNavEvent = null
-                }
-            }
-        }
-        mDrawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-
-        mNavigationView.setNavigationItemSelectedListener(this)
+        mNavigationView.setOnNavigationItemSelectedListener(this)
 
         mEventBus = NavigationEventBus()
         mNavigationController = NavigationEventController(this, mEventBus)
@@ -82,14 +68,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        mPendingNavEvent = Event(item.itemId)
-        val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
-        drawer.closeDrawer(GravityCompat.START)
+        mEventBus.post(Event(item.itemId))
         return true
     }
 
     override fun navigate(screenEvent: ScreenEvent) {
-        mNavigationView.setCheckedItem(screenEvent.id)
         screenEvent.screen.show()
     }
 }
