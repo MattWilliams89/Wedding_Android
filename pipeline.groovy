@@ -23,10 +23,11 @@ parallel (
             }
         },
         "releaseBuild": {
-            node('master') {
+            node('test') {
                 cleanUnstash('sources')
-                def externalMethod = load("steps.groovy")
-                externalMethod.step()
+                buildRelease()
+                sh 'cp app/build/outputs/apk/app-release.apk ' + APK_NAME
+                stash includes: APK_NAME, name: 'apk'
             }
         }
 )
