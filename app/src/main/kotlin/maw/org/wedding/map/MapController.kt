@@ -28,14 +28,16 @@ class MapController(val mContext: Context, val mLocationRequester: LocationReque
                 object : FetcherListener<PlaceList> {
                     override fun onSuccess(result: PlaceList) {
                         val builder = LatLngBounds.Builder()
-                        for (place in result.results!!) {
-                            val marker = MarkerOptions().position(LatLng(place.geometry.location.lat, place.geometry.location.lng)).snippet(place.place_id).icon(BitmapDescriptorFactory.fromResource(R.drawable.hotel_marker_icon))
-                            builder.include(marker.position)
-                            googleMap.addMarker(marker)
-                        }
-                        val bounds = builder.build()
+                        if (result.results?.count()!! > 0) {
+                            for (place in result.results!!) {
+                                val marker = MarkerOptions().position(LatLng(place.geometry.location.lat, place.geometry.location.lng)).snippet(place.place_id).icon(BitmapDescriptorFactory.fromResource(R.drawable.hotel_marker_icon))
+                                builder.include(marker.position)
+                                googleMap.addMarker(marker)
+                            }
+                            val bounds = builder.build()
 
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 25))
+                            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 25))
+                        }
                     }
 
                     override fun onFailure() {

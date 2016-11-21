@@ -24,7 +24,6 @@ class MainActivity : AppCompatActivity(), Navigator, BottomNavigationView.OnNavi
 
     val mNavigationView: BottomNavigationView by bindView(R.id.bottom_navigation)
     val mToolbar: Toolbar by bindView(R.id.toolbar)
-    val mDrawerLayout: DrawerLayout by bindView(R.id.drawer_layout)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,14 +56,6 @@ class MainActivity : AppCompatActivity(), Navigator, BottomNavigationView.OnNavi
     override fun onStop() {
         super.onStop()
         mNavigationController.cleanUp()
-    }
-
-    override fun onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
-        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

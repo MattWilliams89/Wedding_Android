@@ -15,7 +15,7 @@ class NearbyServicesFetcher {
 
     interface RadarSearchService {
         @GET("json")
-        fun getNearby(@Query("type") types: String, @Query("location") location: String, @Query("key") apiKey: String, @Query("radius") radius: String): Call<PlaceList>
+        fun getNearby(@Query("keyword") keyword: String, @Query("type") types: String, @Query("location") location: String, @Query("key") apiKey: String, @Query("radius") radius: String): Call<PlaceList>
     }
 
     fun fetchNearbyHotels(loc: Location, apiKey: String, fetcherListener: FetcherListener<PlaceList>) {
@@ -25,7 +25,7 @@ class NearbyServicesFetcher {
 
         val location = "" + loc.lat + "," + loc.lng
 
-        val call = service.getNearby("lodging", location, apiKey, "1000")
+        val call = service.getNearby("hotel", "lodging", location, apiKey, "3000")
 
         call.enqueue(object : Callback<PlaceList> {
             override fun onResponse(call: Call<PlaceList>, response: Response<PlaceList>) {
