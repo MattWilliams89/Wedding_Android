@@ -19,11 +19,11 @@ import org.maw.wedding.model.PlaceList
 
 class MapController(val mContext: Context, val mLocationRequester: LocationRequester) : OnMapReadyCallback {
 
-    val mMediaCity = LatLng(53.472704, -2.298379)
+    val mMonastery = LatLng(53.4683672,-2.1881899)
 
     private fun fetchNearbyHotels(googleMap: GoogleMap) {
         val nearbyServicesFetcher = NearbyServicesFetcher()
-        nearbyServicesFetcher.fetchNearbyHotels(Location(mMediaCity.latitude, mMediaCity.longitude),
+        nearbyServicesFetcher.fetchNearbyHotels(Location(mMonastery.latitude, mMonastery.longitude),
                 mContext.resources.getString(R.string.google_server_key),
                 object : FetcherListener<PlaceList> {
                     override fun onSuccess(result: PlaceList) {
@@ -46,8 +46,8 @@ class MapController(val mContext: Context, val mLocationRequester: LocationReque
 
     override fun onMapReady(googleMap: GoogleMap) {
 
-        googleMap.addMarker(MarkerOptions().position(mMediaCity).title("MediaCityUk"))
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mMediaCity, 15f))
+        googleMap.addMarker(MarkerOptions().position(mMonastery).title("Gorton Monastery"))
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mMonastery, 15f))
 
         googleMap.isTrafficEnabled = true
 
@@ -68,7 +68,7 @@ class MapController(val mContext: Context, val mLocationRequester: LocationReque
         fetchNearbyHotels(googleMap)
 
         googleMap.setOnMarkerClickListener { marker ->
-            if (marker.position != mMediaCity) {
+            if (marker.position != mMonastery) {
                 if (!markerViewModelStore.exists(marker.id)) {
                     MarkerInformationFetcher().fetch(mContext, marker, markerViewModelStore)
                 } else {
